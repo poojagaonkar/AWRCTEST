@@ -79,7 +79,10 @@ public class LoginActivity extends AppCompatActivity  {
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
-private  EditText mBaseUrlView;
+ private  EditText mBaseUrlView;
+    private String userName;
+    private  String baseUrl;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,8 +110,21 @@ private  EditText mBaseUrlView;
             }
         });
 
+         SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+
+        baseUrl = mPrefs.getString("BaseUrl", null);
+        userName = mPrefs.getString("UserName", null);
+
+        if(!TextUtils.isEmpty(baseUrl) && !TextUtils.isEmpty(userName))
+        {
+            mBaseUrlView.setText(baseUrl);
+            mUserNameView.setText(userName);
+        }
+
+
     }
 
 
@@ -134,9 +150,10 @@ private  EditText mBaseUrlView;
         mBaseUrlView.setError(null);
 
         // Store values at the time of the login attempt.
-        String userName = mUserNameView.getText().toString();
-        String password = mPasswordView.getText().toString();
-        String baseUrl = mBaseUrlView.getText().toString();
+         String password = mPasswordView.getText().toString();
+         baseUrl = mBaseUrlView.getText().toString();
+        userName = mUserNameView.getText().toString();
+
 
         boolean cancel = false;
         View focusView = null;
@@ -241,6 +258,8 @@ private  EditText mBaseUrlView;
         private final String mPassword;
         private  final  String mBaseUrl;
         SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences.Editor editor = mPrefs.edit();
+
         private   String mUserSessionName ="";
         private   String mUserSessionValue ="";
 
@@ -328,10 +347,12 @@ private  EditText mBaseUrlView;
             if (success) {
 
                 //On successful login, save the variables for next use.
-                mPrefs.edit().putString("UserSessionName", mUserSessionName);
-                mPrefs.edit().putString("UserSessionValue", mUserSessionValue);
+               editor.putString("UserSessionName", mUserSessionName);
+                editor.putString("UserSessionValue", mUserSessionValue);
+                editor.putString("BaseUrl", mBaseUrl);
+                editor.putString("UserName", mUserName);
 
-                mPrefs.edit().commit();
+                editor.commit();
 
                 //Start next activity
                 Intent mIntent = new Intent(getApplicationContext(), HomeActivity.class);
