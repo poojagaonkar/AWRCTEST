@@ -115,8 +115,8 @@ public class LoginActivity extends AppCompatActivity  {
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
 
-        baseUrl = mPrefs.getString("BaseUrl", null);
-        userName = mPrefs.getString("UserName", null);
+        baseUrl = mPrefs.getString(getResources().getString(R.string.pref_baseUrl), null);
+        userName = mPrefs.getString(getResources().getString(R.string.pref_userName), null);
 
         if(!TextUtils.isEmpty(baseUrl) && !TextUtils.isEmpty(userName))
         {
@@ -347,10 +347,10 @@ public class LoginActivity extends AppCompatActivity  {
             if (success) {
 
                 //On successful login, save the variables for next use.
-               editor.putString("UserSessionName", mUserSessionName);
-                editor.putString("UserSessionValue", mUserSessionValue);
-                editor.putString("BaseUrl", mBaseUrl);
-                editor.putString("UserName", mUserName);
+               editor.putString(getResources().getString(R.string.pref_sessionUserName), mUserSessionName);
+                editor.putString(getResources().getString(R.string.pref_sessionUserValue), mUserSessionValue);
+                editor.putString(getResources().getString(R.string.pref_baseUrl), mBaseUrl);
+                editor.putString(getResources().getString(R.string.pref_userName), mUserName);
 
                 editor.commit();
 

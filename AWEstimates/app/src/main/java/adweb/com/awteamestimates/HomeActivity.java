@@ -1,6 +1,9 @@
 package adweb.com.awteamestimates;
 
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.view.View;
@@ -14,10 +17,35 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.w3c.dom.Text;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import javax.net.ssl.HttpsURLConnection;
+
+import adweb.com.awteamestimates.Models.LoginModel;
+import adweb.com.awteamestimates.Service.ApiUrls;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private GetUserDetailsTask mAuthTask;
+    public SharedPreferences mPrefs ;
+    public  SharedPreferences.Editor mEdit ;
+    private  String mUserName ;
+    private  String mSessionUserName;
+    private  String mSessionUserValue;
+    private  String mBaseUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,8 +79,15 @@ public class HomeActivity extends AppCompatActivity
         TextView txtUserName= (TextView) drawer.findViewById(R.id.txtUserName);
         TextView txtUserEmail= (TextView) drawer. findViewById(R.id.txtUserEmail);
 
-//        mAuthTask = new GetUserDetailsTask();
-//        mAuthTask.execute((Void) null);
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        mEdit = mPrefs.edit();
+
+
+        mBaseUrl = mPrefs.getString(getResources().getString(R.string.pref_baseUrl), null);
+        mUserName = mPrefs.getString(getResources().getString(R.string.pref_userName), null);
+
+        mAuthTask = new GetUserDetailsTask();
+        mAuthTask.execute((Void) null);
 
 
     }
@@ -112,5 +147,56 @@ public class HomeActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public  class GetUserDetailsTask extends AsyncTask<Void, Void, Boolean> {
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+
+            try{
+
+            URL url = new URL("https://7762f1d2.ngrok.io/jira/rest/api/2/user?username=admin" );
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setDoOutput(true);
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+
+
+
+
+            if (conn.getResponseCode() != HttpURLConnection.HTTP_OK)
+            {
+                throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
+            }
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(
+                    (conn.getInputStream())));
+
+            String output;
+
+            while ((output = br.readLine()) != null) {
+
+                System.out.println("Output from Server .... \n" + output);
+
+            }
+
+
+
+            conn.disconnect();
+
+        }  catch (IOException e) {
+            e.printStackTrace();
+        }
+            catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+        }
     }
 }

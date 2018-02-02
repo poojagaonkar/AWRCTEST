@@ -20,5 +20,10 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email completions."
     </string>
     <string name="base_url">Base Url</string>
+    <string name="pref_baseUrl">BaseUrl</string>
+    <string name="pref_userName">UserName</string>
+    <string name="pref_sessionUserName">UserSessionName</string>
+    <string name="pref_sessionUserValue">mUserSessionValue</string>
+
 
 </resources>
