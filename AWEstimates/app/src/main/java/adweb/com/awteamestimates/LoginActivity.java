@@ -49,6 +49,7 @@ import java.util.List;
 
 import adweb.com.awteamestimates.Models.LoginModel;
 import adweb.com.awteamestimates.Service.ApiUrls;
+import adweb.com.awteamestimates.Utilities.AppConstants;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -351,7 +352,7 @@ public class LoginActivity extends AppCompatActivity  {
                 editor.putString(getResources().getString(R.string.pref_sessionUserValue), mUserSessionValue);
                 editor.putString(getResources().getString(R.string.pref_baseUrl), mBaseUrl);
                 editor.putString(getResources().getString(R.string.pref_userName), mUserName);
-
+                AppConstants.tempPass = mPassword;
                 editor.commit();
 
                 //Start next activity

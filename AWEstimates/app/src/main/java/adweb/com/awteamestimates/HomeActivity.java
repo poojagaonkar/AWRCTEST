@@ -1,6 +1,7 @@
 package adweb.com.awteamestimates;
 
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -45,6 +46,7 @@ import javax.net.ssl.HttpsURLConnection;
 import adweb.com.awteamestimates.Models.LoginModel;
 import adweb.com.awteamestimates.Models.UserModel;
 import adweb.com.awteamestimates.Service.ApiUrls;
+import adweb.com.awteamestimates.Utilities.AppConstants;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -55,6 +57,8 @@ public class HomeActivity extends AppCompatActivity
     private  String mSessionUserName;
     private  String mSessionUserValue;
     private  String mBaseUrl;
+    private TextView txtUserName;
+    private TextView txtUserEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,8 +89,8 @@ public class HomeActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
 
-        TextView txtUserName= (TextView) drawer.findViewById(R.id.txtUserName);
-        TextView txtUserEmail= (TextView) drawer. findViewById(R.id.txtUserEmail);
+        txtUserName= (TextView)navigationView.getHeaderView(0).findViewById(R.id.txtUserName);
+        txtUserEmail= (TextView)navigationView.getHeaderView(0).findViewById(R.id.txtUserEmail);
 
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         mEdit = mPrefs.edit();
@@ -128,7 +132,7 @@ public class HomeActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_refresh) {
             return true;
         }
 
@@ -141,17 +145,10 @@ public class HomeActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.nav_project) {
             // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.nav_logout) {
 
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
 
         }
 
@@ -161,34 +158,47 @@ public class HomeActivity extends AppCompatActivity
     }
 
 
-    private class GetUserDetails extends AsyncTask <String, Void, Void> {
+    private class GetUserDetails extends AsyncTask <String, Void, UserModel> {
+
         @Override
-        protected Void doInBackground(String... strings) {
-            String auth = new String(Base64.encode("admin:admin"));
+        protected void onPostExecute(UserModel mModel) {
+            super.onPostExecute(mModel);
+
+            String userFirstName = mModel.getDisplayName();
+            String userEmail = mModel.getEmailAddress();
+        //   String avrUrl = mModel.getAvatarUrls().get48x48();
+            System.out.println(userFirstName +"," + userEmail+",");
+
+            mEdit.putString(getResources().getString(R.string.pref_userDisplayName), userFirstName);
+            mEdit.putString(getResources().getString(R.string.pref_userEmail), userEmail);
+            mEdit.commit();
+
+           txtUserEmail.setText(userEmail);
+           txtUserName.setText(userFirstName);
+
+        }
+
+        @Override
+        protected UserModel doInBackground(String... strings) {
+            String auth = new String(Base64.encode(mUserName+":"+ AppConstants.tempPass));
             try {
-                String projects = invokeGetMethod(auth,"http://172.21.128.209:2990/jira"+"/rest/api/2/user?key=admin");
+                String projects = invokeGetMethod(auth,mBaseUrl + ApiUrls.USER_DETAIL_URL + mUserName);
                 System.out.println(projects);
 
-                final ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, false);;
-                try {
 
-                    UserModel mModel = mapper.readValue(projects, UserModel.class);
-                    String userFirstName = mModel.getDisplayName();
-                    String userEmail = mModel.getEmailAddress();
-                    String avrUrl = mModel.getAvatarUrls().get48x48();
-                    System.out.println(userFirstName +"," + userEmail+","+avrUrl);
 
-                } catch (IOException e) {
+                final ObjectMapper mapper = new ObjectMapper();//.configure(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT, false);;
+                UserModel mModel = mapper.readValue(projects, UserModel.class);
+                return  mModel;
+
+                } catch (Exception e) {
+                    System.out.println("Username or Password wrong!");
                     e.printStackTrace();
                 }
-
-
-            } catch (Exception e) {
-                System.out.println("Username or Password wrong!");
-                e.printStackTrace();
-            }
-            return null;        }
+            return null;
+        }
     }
+
     private static String invokeGetMethod(String auth, String url) throws Exception, ClientHandlerException {
         Client client = Client.create();
         WebResource webResource = client.resource(url);

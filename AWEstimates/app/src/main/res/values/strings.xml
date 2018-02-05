@@ -24,6 +24,8 @@
     <string name="pref_userName">UserName</string>
     <string name="pref_sessionUserName">UserSessionName</string>
     <string name="pref_sessionUserValue">mUserSessionValue</string>
+    <string name="pref_userDisplayName">UserDisplayName</string>
+    <string name="pref_userEmail">UserEmail</string>
 
 
 </resources>
