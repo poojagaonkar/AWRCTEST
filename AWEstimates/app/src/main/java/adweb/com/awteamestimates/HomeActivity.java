@@ -1,5 +1,6 @@
 package adweb.com.awteamestimates;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.AsyncTask;
@@ -59,6 +60,8 @@ public class HomeActivity extends AppCompatActivity
     private  String mBaseUrl;
     private TextView txtUserName;
     private TextView txtUserEmail;
+    private  TextView txtTemp;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +70,7 @@ public class HomeActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        txtTemp = (TextView)findViewById(R.id.txtSelect);
 
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
@@ -103,6 +107,18 @@ public class HomeActivity extends AppCompatActivity
         GetUserDetails getUserDetails = new GetUserDetails();
         //Call execute
         getUserDetails.execute();
+
+
+        txtTemp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent mIntent = new Intent();
+                mIntent.setClass(getApplicationContext(), ProjectEstimateActivity.class);
+                startActivity(mIntent);
+
+            }
+        });
     }
 
 

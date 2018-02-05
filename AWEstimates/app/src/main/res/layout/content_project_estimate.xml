@@ -98,6 +98,7 @@
                 android:layout_weight="100"
                 android:background="@drawable/button_background"
                 android:text="Estimate Issue"
+                android:id="@+id/btnEstimates"
                 android:textColor="@android:color/white" />
 
         </TableRow>
@@ -140,7 +141,7 @@
                 android:layout_weight="5"
                 android:layout_marginLeft="2dp"
                 android:layout_marginRight="10dp"
-                android:id="@+id/editWeek"/>
+                android:id="@+id/editWeek1"/>
             <android.support.v7.widget.AppCompatImageButton
                 android:layout_width="0dp"
                 android:layout_height="30dp"
