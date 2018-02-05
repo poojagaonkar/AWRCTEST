@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="adweb.com.awteamestimates.ProjectEstimateActivity"
+    tools:showIn="@layout/activity_project_estimate"
+    android:padding="10dp">
+
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Current Issue Details"
+        android:textColor="#ffffff"
+        android:textSize="18dp"
+        tools:layout_editor_absoluteX="101dp"
+        tools:layout_editor_absoluteY="44dp" />
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:padding="10dp">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:weightSum="10">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:text="Project Name : "
+                android:textColor="@android:color/white" />
+
+            <TextView
+                android:id="@+id/txtProjectName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="7"
+                android:text="N/A"
+                android:textColor="@android:color/white" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:weightSum="10">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:text="Issue Title : "
+                android:textColor="@android:color/white" />
+
+            <TextView
+                android:id="@+id/txtIssueTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="7"
+                android:text="N/A"
+                android:textColor="@android:color/white" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="30dp"
+            android:gravity="right">
+
+            <TextView
+                android:id="@+id/txtMoreDetails"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="More Details "
+                android:textColor="@android:color/white"
+                android:textStyle="italic" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="30dp">
+
+            <android.support.v7.widget.AppCompatButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="100"
+                android:background="@drawable/button_background"
+                android:text="Estimate Issue"
+                android:textColor="@android:color/white" />
+
+        </TableRow>
+
+    </TableLayout>
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tableSlidingFooter"
+        android:background="@android:color/white"
+        android:padding="10dp">
+
+        <android.support.v7.widget.AppCompatTextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="Please enter your estimation"
+            android:textColor="@color/colorPrimaryDark"
+            android:textStyle="bold"
+            android:textSize="15dp"
+            android:gravity="center"
+            />
+
+        <TableRow
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:weightSum="10"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:text="Weeks:"
+                android:textColor="@color/colorPrimaryDark"
+                android:layout_weight="2"/>
+
+            <EditText
+                android:layout_height="30dp"
+                android:layout_width="0dp"
+                android:background="@drawable/edittext_background"
+                android:layout_weight="5"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="10dp"
+                android:id="@+id/editWeek"/>
+            <android.support.v7.widget.AppCompatImageButton
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_add"
+                android:layout_weight="1.5"
+                android:background="@drawable/edittext_background"
+                android:id="@+id/btnCounterUpW"
+                />
+            <android.support.v7.widget.AppCompatImageButton
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_remove"
+                android:layout_weight="1.5"
+                android:background="@drawable/edittext_background"
+                android:id="@+id/btnCounterDownW"
+                />
+
+
+        </TableRow>
+
+        <TableRow
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:weightSum="10"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:text="Days:"
+                android:textColor="@color/colorPrimaryDark"
+                android:layout_weight="2"/>
+
+            <EditText
+                android:layout_height="30dp"
+                android:layout_width="0dp"
+                android:background="@drawable/edittext_background"
+                android:layout_weight="5"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="10dp"
+                android:id="@+id/editDays"/>
+
+            <android.support.v7.widget.AppCompatImageButton
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_add"
+                android:layout_weight="1.5"
+                android:background="@drawable/edittext_background"
+                android:id="@+id/btnCounterUpD"
+                />
+            <android.support.v7.widget.AppCompatImageButton
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_remove"
+                android:layout_weight="1.5"
+                android:background="@drawable/edittext_background"
+                android:id="@+id/btnCounterDownD"
+                />
+
+
+        </TableRow>
+        <TableRow
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:weightSum="10"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:text="Hours:"
+                android:textColor="@color/colorPrimaryDark"
+                android:layout_weight="2"/>
+
+            <EditText
+                android:layout_height="30dp"
+                android:layout_width="0dp"
+                android:background="@drawable/edittext_background"
+                android:layout_weight="5"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="10dp"
+                android:id="@+id/editHours"
+                />
+            <android.support.v7.widget.AppCompatImageButton
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_add"
+                android:layout_weight="1.5"
+                android:background="@drawable/edittext_background"
+                android:id="@+id/btnCounterUpH"
+                />
+            <android.support.v7.widget.AppCompatImageButton
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_remove"
+                android:layout_weight="1.5"
+                android:background="@drawable/edittext_background"
+                android:id="@+id/btnCounterDownH"
+                />
+
+
+        </TableRow>
+        <TableRow
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:weightSum="10"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:text="Minutes:"
+                android:textColor="@color/colorPrimaryDark"
+                android:layout_weight="2"/>
+
+            <EditText
+                android:layout_height="30dp"
+                android:layout_width="0dp"
+                android:background="@drawable/edittext_background"
+                android:layout_weight="5"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="10dp"
+                android:id="@+id/editMinutes"
+                />
+            <android.support.v7.widget.AppCompatImageButton
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_add"
+                android:layout_weight="1.5"
+                android:background="@drawable/edittext_background"
+                android:id="@+id/btnCounterUpM"
+                />
+            <android.support.v7.widget.AppCompatImageButton
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_remove"
+                android:layout_weight="1.5"
+                android:background="@drawable/edittext_background"
+                android:id="@+id/btnCounterDownM"
+                />
+
+
+        </TableRow>
+
+        <Button android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@color/colorPrimaryDark"
+            android:textColor="@android:color/white"
+            android:text="Submit"
+            android:id="@+id/btnSubmit"/>
+
+    </TableLayout>
+</LinearLayout>
