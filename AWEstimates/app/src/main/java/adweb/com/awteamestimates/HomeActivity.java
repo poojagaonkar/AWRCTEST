@@ -17,9 +17,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientHandlerException;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.core.util.Base64;
+
+
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
@@ -34,12 +43,12 @@ import java.net.URL;
 import javax.net.ssl.HttpsURLConnection;
 
 import adweb.com.awteamestimates.Models.LoginModel;
+import adweb.com.awteamestimates.Models.UserModel;
 import adweb.com.awteamestimates.Service.ApiUrls;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private GetUserDetailsTask mAuthTask;
     public SharedPreferences mPrefs ;
     public  SharedPreferences.Editor mEdit ;
     private  String mUserName ;
@@ -86,11 +95,13 @@ public class HomeActivity extends AppCompatActivity
         mBaseUrl = mPrefs.getString(getResources().getString(R.string.pref_baseUrl), null);
         mUserName = mPrefs.getString(getResources().getString(R.string.pref_userName), null);
 
-        mAuthTask = new GetUserDetailsTask();
-        mAuthTask.execute((Void) null);
 
-
+        GetUserDetails getUserDetails = new GetUserDetails();
+        //Call execute
+        getUserDetails.execute();
     }
+
+
 
     @Override
     public void onBackPressed() {
@@ -149,54 +160,44 @@ public class HomeActivity extends AppCompatActivity
         return true;
     }
 
-    public  class GetUserDetailsTask extends AsyncTask<Void, Void, Boolean> {
+
+    private class GetUserDetails extends AsyncTask <String, Void, Void> {
         @Override
-        protected Boolean doInBackground(Void... voids) {
+        protected Void doInBackground(String... strings) {
+            String auth = new String(Base64.encode("admin:admin"));
+            try {
+                String projects = invokeGetMethod(auth,"http://172.21.128.209:2990/jira"+"/rest/api/2/user?key=admin");
+                System.out.println(projects);
 
-            try{
+                final ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, false);;
+                try {
 
-            URL url = new URL("https://7762f1d2.ngrok.io/jira/rest/api/2/user?username=admin" );
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setDoOutput(true);
-            conn.setRequestMethod("GET");
-            conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+                    UserModel mModel = mapper.readValue(projects, UserModel.class);
+                    String userFirstName = mModel.getDisplayName();
+                    String userEmail = mModel.getEmailAddress();
+                    String avrUrl = mModel.getAvatarUrls().get48x48();
+                    System.out.println(userFirstName +"," + userEmail+","+avrUrl);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
 
-
-
-            if (conn.getResponseCode() != HttpURLConnection.HTTP_OK)
-            {
-                throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
+            } catch (Exception e) {
+                System.out.println("Username or Password wrong!");
+                e.printStackTrace();
             }
-
-            BufferedReader br = new BufferedReader(new InputStreamReader(
-                    (conn.getInputStream())));
-
-            String output;
-
-            while ((output = br.readLine()) != null) {
-
-                System.out.println("Output from Server .... \n" + output);
-
-            }
-
-
-
-            conn.disconnect();
-
-        }  catch (IOException e) {
-            e.printStackTrace();
+            return null;        }
+    }
+    private static String invokeGetMethod(String auth, String url) throws Exception, ClientHandlerException {
+        Client client = Client.create();
+        WebResource webResource = client.resource(url);
+        ClientResponse response = webResource.header("Authorization", "Basic " + auth).type("application/json")
+                .accept("application/json").get(ClientResponse.class);
+        int statusCode = response.getStatus();
+        if (statusCode == 401) {
+            throw new Exception("Invalid Username or Password");
         }
-            catch (Exception ex)
-        {
-            ex.printStackTrace();
-        }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean aBoolean) {
-            super.onPostExecute(aBoolean);
-        }
+        return response.getEntity(String.class);
     }
 }
