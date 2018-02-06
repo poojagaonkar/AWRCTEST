@@ -17,6 +17,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,11 +44,15 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import adweb.com.awteamestimates.Models.CurrentEstimatedIssue;
 import adweb.com.awteamestimates.Models.LoginModel;
+import adweb.com.awteamestimates.Models.ProjectModel;
 import adweb.com.awteamestimates.Models.UserModel;
 import adweb.com.awteamestimates.Service.ApiUrls;
 import adweb.com.awteamestimates.Service.JiraServices;
@@ -64,7 +70,7 @@ public class HomeActivity extends AppCompatActivity
     private TextView txtUserName;
     private TextView txtUserEmail;
     private  TextView txtTemp;
-
+    private Spinner mProjectSpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,14 +81,7 @@ public class HomeActivity extends AppCompatActivity
 
         txtTemp = (TextView)findViewById(R.id.txtSelect);
 
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
+        mProjectSpinner = findViewById(R.id.spinProjectName);
 
 
 
@@ -107,11 +106,10 @@ public class HomeActivity extends AppCompatActivity
         mUserName = mPrefs.getString(getResources().getString(R.string.pref_userName), null);
 
 
-        //Call execute
+
+        //region Get user details
         try {
             JiraServices. GetUserDetails getUserDetails = new JiraServices.GetUserDetails(mUserName,mBaseUrl);
-
-
             UserModel mModel = getUserDetails.execute().get();
 
             if(mModel != null ) {
@@ -140,6 +138,45 @@ public class HomeActivity extends AppCompatActivity
         {
             Toast.makeText(this, ex.getMessage(), Toast.LENGTH_LONG).show();
         }
+        //endregion
+
+
+
+        //region Get Project Details
+        try {
+            JiraServices. GetProjectDetails getProjectDetails = new JiraServices.GetProjectDetails(mUserName,mBaseUrl);
+            ProjectModel mModel = getProjectDetails.execute().get();
+
+            if(mModel != null ) {
+                AppConstants.FullProjectList = mModel.getCurrentEstimatedIssue();
+                List<String> projectTitles  = new ArrayList<>();
+
+                for(CurrentEstimatedIssue mIssue : AppConstants.FullProjectList )
+               {
+
+                   projectTitles.add(mIssue.getProjectName());
+                   System.out.println(mIssue.getIssueKey() +"\n" + mIssue.getIssueTitle() +"\n"+ mIssue.getProjectKey() +"\n"+ mIssue.getProjectName());
+
+               }
+
+                ArrayAdapter<CharSequence> adapter = new ArrayAdapter(this,android.R.layout.simple_spinner_item, projectTitles);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                  mProjectSpinner.setAdapter(adapter);
+            }
+            else
+            {
+                throw new RuntimeException("Could not fetch project details.");
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        catch (Exception ex)
+        {
+            Toast.makeText(this, ex.getMessage(), Toast.LENGTH_LONG).show();
+        }
+        //endregion
 
 
         txtTemp.setOnClickListener(new View.OnClickListener() {

@@ -23,6 +23,7 @@ import java.net.URL;
 
 import adweb.com.awteamestimates.HomeActivity;
 import adweb.com.awteamestimates.Models.LoginModel;
+import adweb.com.awteamestimates.Models.ProjectModel;
 import adweb.com.awteamestimates.Models.UserModel;
 import adweb.com.awteamestimates.R;
 import adweb.com.awteamestimates.Utilities.AppConstants;
@@ -34,7 +35,7 @@ import adweb.com.awteamestimates.Utilities.AppConstants;
 public class JiraServices {
 
 
-    //<editor-fold desc="Login">
+    //<editor-fold desc="POST ==> Login">
     public static class UserLoginTask extends AsyncTask<Void, Void, LoginModel> {
 
         private final String mUserName;
@@ -151,6 +152,7 @@ public class JiraServices {
     }
     //</editor-fold>
 
+    //<editor-fold desc="GET ==> Get User Details">
     public static class GetUserDetails extends AsyncTask <String, Void, UserModel> {
 
         private final String mUserName;
@@ -202,5 +204,60 @@ public class JiraServices {
             return response.getEntity(String.class);
         }
     }
+    //</editor-fold>
+
+    //<editor-fold desc="GET ==> Get Project Details">
+    public static class GetProjectDetails extends AsyncTask <String, Void, ProjectModel> {
+
+        private final String mUserName;
+        private final String mBaseUrl;
+
+        public  GetProjectDetails(String userName, String baseUrl)
+        {
+            mUserName = userName;
+            mBaseUrl = baseUrl;
+        }
+
+        @Override
+        protected void onPostExecute(ProjectModel mModel) {
+            super.onPostExecute(mModel);
+
+
+
+        }
+
+        @Override
+        protected ProjectModel doInBackground(String... strings) {
+            String auth = new String(Base64.encode(mUserName+":"+ AppConstants.tempPass));
+            try {
+                String projects = invokeGetMethod(auth,mBaseUrl + ApiUrls.FETCH_PROJECTS_URL);
+                System.out.println(projects);
+
+
+
+                final ObjectMapper mapper = new ObjectMapper();//.configure(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT, false);;
+                ProjectModel mModel = mapper.readValue(projects, ProjectModel.class);
+                return  mModel;
+
+            } catch (Exception e) {
+                System.out.println("Username or Password wrong!");
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        private  String invokeGetMethod(String auth, String url) throws Exception, ClientHandlerException {
+            Client client = Client.create();
+            WebResource webResource = client.resource(url);
+            ClientResponse response = webResource.header("Authorization", "Basic " + auth).type("application/json")
+                    .accept("application/json").get(ClientResponse.class);
+            int statusCode = response.getStatus();
+            if (statusCode == 401) {
+                throw new Exception("Invalid Username or Password");
+            }
+            return response.getEntity(String.class);
+        }
+    }
+    //</editor-fold>
 
 }

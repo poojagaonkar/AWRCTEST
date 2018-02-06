@@ -10,6 +10,11 @@
     tools:context="adweb.com.awteamestimates.HomeActivity"
     tools:showIn="@layout/app_bar_home">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="vertical">
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -17,7 +22,7 @@
         android:textColor="#ffffff"
         android:textSize="18sp"
         android:id="@+id/txtSelect"
-       android:layout_centerInParent="true" />
+       android:layout_gravity="center_horizontal"/>
 
     <Spinner
         android:id="@+id/spinProjectName"
@@ -27,4 +32,13 @@
         android:layout_marginTop="10dp"
         android:background="@android:color/white" />
 
+    <ImageButton
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:background="@drawable/button_background"
+        android:src="@drawable/ic_arrow_forward_24dp"
+        android:id="@+id/btnNext"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="right"/>
+    </LinearLayout>
 </RelativeLayout>
