@@ -46,9 +46,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import adweb.com.awteamestimates.Models.LoginModel;
+import adweb.com.awteamestimates.Models.UserModel;
 import adweb.com.awteamestimates.Service.ApiUrls;
+import adweb.com.awteamestimates.Service.JiraServices;
 import adweb.com.awteamestimates.Utilities.AppConstants;
 
 import static android.Manifest.permission.READ_CONTACTS;
@@ -73,7 +76,7 @@ public class LoginActivity extends AppCompatActivity  {
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
-    private UserLoginTask mAuthTask = null;
+    private JiraServices.UserLoginTask mAuthTask = null;
 
     // UI references.
     private EditText mUserNameView;
@@ -83,6 +86,12 @@ public class LoginActivity extends AppCompatActivity  {
  private  EditText mBaseUrlView;
     private String userName;
     private  String baseUrl;
+
+
+    private   String mUserSessionName ="";
+    private   String mUserSessionValue ="";
+    private SharedPreferences mPrefs;
+    private SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,7 +120,8 @@ public class LoginActivity extends AppCompatActivity  {
             }
         });
 
-         SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+         mPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+         editor = mPrefs.edit();
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
@@ -181,11 +191,7 @@ public class LoginActivity extends AppCompatActivity  {
             focusView = mUserNameView;
             cancel = true;
    }
-// else if (!isEmailValid(userName)) {
-//            mUserNameView.setError(getString(R.string.error_invalid_email));
-//            focusView = mUserNameView;
-//            cancel = true;
-//        }
+
 
         if (cancel) {
             // There was an error; don't attempt login and focus the first
@@ -195,8 +201,41 @@ public class LoginActivity extends AppCompatActivity  {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(userName, password,baseUrl);
-            mAuthTask.execute((Void) null);
+            try {
+
+                mAuthTask = null;
+                 showProgress(false);
+                mAuthTask = new  JiraServices.UserLoginTask(userName, password,baseUrl);
+
+                LoginModel mModel = mAuthTask.execute().get();
+
+
+                if (mModel != null) {
+
+                    mUserSessionName = mModel.getSession().getName() ;
+                    mUserSessionValue = mModel.getSession().getValue();
+
+                    //On successful login, save the variables for next use.
+                    editor.putString(getResources().getString(R.string.pref_sessionUserName), mUserSessionName);
+                    editor.putString(getResources().getString(R.string.pref_sessionUserValue), mUserSessionValue);
+                    editor.putString(getResources().getString(R.string.pref_baseUrl), baseUrl);
+                    editor.putString(getResources().getString(R.string.pref_userName), userName);
+                    AppConstants.tempPass = password;
+                    editor.commit();
+
+                    //Start next activity
+                    Intent mIntent = new Intent(getApplicationContext(), HomeActivity.class);
+                    startActivity(mIntent);
+                    finish();
+                } else {
+                    mPasswordView.setError(getString(R.string.error_incorrect_password));
+                    mPasswordView.requestFocus();
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -253,123 +292,123 @@ public class LoginActivity extends AppCompatActivity  {
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-
-        private final String mUserName;
-        private final String mPassword;
-        private  final  String mBaseUrl;
-        SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        SharedPreferences.Editor editor = mPrefs.edit();
-
-        private   String mUserSessionName ="";
-        private   String mUserSessionValue ="";
-
-        UserLoginTask(String userName, String password, String baseUrl) {
-            mUserName = userName;
-            mPassword = password;
-            mBaseUrl = baseUrl;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-
-            try {
-
-                String credentials = "{\"username\":\""+mUserName+"\",\"password\":\""+mPassword+"\"}";
-
-               // String credentials = "{\"username\":\"admin\",\"password\":\"admin\"}";
-
-                URL url = new URL(mBaseUrl + ApiUrls.LOGIN_URL );
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setDoOutput(true);
-                conn.setRequestMethod("POST");
-                conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-
-
-                OutputStream os = conn.getOutputStream();
-                os.write(credentials.getBytes());
-                os.close();
-
-                if (conn.getResponseCode() != HttpURLConnection.HTTP_OK)
-                {
-                    throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
-                }
-
-                BufferedReader br = new BufferedReader(new InputStreamReader(
-                        (conn.getInputStream())));
-
-                String output;
-
-                while ((output = br.readLine()) != null) {
-
-                    System.out.println("Output from Server .... \n" + output);
-                    final ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, false);;
-                    try {
-
-                        LoginModel mModel = mapper.readValue(output, LoginModel.class);
-                         mUserSessionName = mModel.getSession().getName() ;
-                         mUserSessionValue = mModel.getSession().getValue();
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-
-
-                conn.disconnect();
-
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            catch (Exception ex)
-            {
-                ex.printStackTrace();
-            }
-
-            // TODO: register the new account here.
-            return true;
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
-            showProgress(false);
-
-            if (success) {
-
-                //On successful login, save the variables for next use.
-               editor.putString(getResources().getString(R.string.pref_sessionUserName), mUserSessionName);
-                editor.putString(getResources().getString(R.string.pref_sessionUserValue), mUserSessionValue);
-                editor.putString(getResources().getString(R.string.pref_baseUrl), mBaseUrl);
-                editor.putString(getResources().getString(R.string.pref_userName), mUserName);
-                AppConstants.tempPass = mPassword;
-                editor.commit();
-
-                //Start next activity
-                Intent mIntent = new Intent(getApplicationContext(), HomeActivity.class);
-                startActivity(mIntent);
-                finish();
-            } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mAuthTask = null;
-            showProgress(false);
-        }
-    }
+//    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+//
+//        private final String mUserName;
+//        private final String mPassword;
+//        private  final  String mBaseUrl;
+//        SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+//        SharedPreferences.Editor editor = mPrefs.edit();
+//
+//        private   String mUserSessionName ="";
+//        private   String mUserSessionValue ="";
+//
+//        UserLoginTask(String userName, String password, String baseUrl) {
+//            mUserName = userName;
+//            mPassword = password;
+//            mBaseUrl = baseUrl;
+//        }
+//
+//        @Override
+//        protected void onPreExecute() {
+//            super.onPreExecute();
+//
+//        }
+//
+//        @Override
+//        protected Boolean doInBackground(Void... params) {
+//            // TODO: attempt authentication against a network service.
+//
+//            try {
+//
+//                String credentials = "{\"username\":\""+mUserName+"\",\"password\":\""+mPassword+"\"}";
+//
+//               // String credentials = "{\"username\":\"admin\",\"password\":\"admin\"}";
+//
+//                URL url = new URL(mBaseUrl + ApiUrls.LOGIN_URL );
+//                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+//                conn.setDoOutput(true);
+//                conn.setRequestMethod("POST");
+//                conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+//
+//
+//                OutputStream os = conn.getOutputStream();
+//                os.write(credentials.getBytes());
+//                os.close();
+//
+//                if (conn.getResponseCode() != HttpURLConnection.HTTP_OK)
+//                {
+//                    throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
+//                }
+//
+//                BufferedReader br = new BufferedReader(new InputStreamReader(
+//                        (conn.getInputStream())));
+//
+//                String output;
+//
+//                while ((output = br.readLine()) != null) {
+//
+//                    System.out.println("Output from Server .... \n" + output);
+//                    final ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, false);;
+//                    try {
+//
+//                        LoginModel mModel = mapper.readValue(output, LoginModel.class);
+//                         mUserSessionName = mModel.getSession().getName() ;
+//                         mUserSessionValue = mModel.getSession().getValue();
+//
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//
+//
+//
+//                conn.disconnect();
+//
+//            } catch (MalformedURLException e) {
+//                e.printStackTrace();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//            catch (Exception ex)
+//            {
+//                ex.printStackTrace();
+//            }
+//
+//            // TODO: register the new account here.
+//            return true;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(final Boolean success) {
+//            mAuthTask = null;
+//            showProgress(false);
+//
+//            if (success) {
+//
+//                //On successful login, save the variables for next use.
+//               editor.putString(getResources().getString(R.string.pref_sessionUserName), mUserSessionName);
+//                editor.putString(getResources().getString(R.string.pref_sessionUserValue), mUserSessionValue);
+//                editor.putString(getResources().getString(R.string.pref_baseUrl), mBaseUrl);
+//                editor.putString(getResources().getString(R.string.pref_userName), mUserName);
+//                AppConstants.tempPass = mPassword;
+//                editor.commit();
+//
+//                //Start next activity
+//                Intent mIntent = new Intent(getApplicationContext(), HomeActivity.class);
+//                startActivity(mIntent);
+//                finish();
+//            } else {
+//                mPasswordView.setError(getString(R.string.error_incorrect_password));
+//                mPasswordView.requestFocus();
+//            }
+//        }
+//
+//        @Override
+//        protected void onCancelled() {
+//            mAuthTask = null;
+//            showProgress(false);
+//        }
+//    }
 }
 

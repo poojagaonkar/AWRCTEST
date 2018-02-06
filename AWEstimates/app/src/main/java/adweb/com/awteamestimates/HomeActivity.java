@@ -18,6 +18,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientHandlerException;
@@ -41,12 +42,14 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.concurrent.ExecutionException;
 
 import javax.net.ssl.HttpsURLConnection;
 
 import adweb.com.awteamestimates.Models.LoginModel;
 import adweb.com.awteamestimates.Models.UserModel;
 import adweb.com.awteamestimates.Service.ApiUrls;
+import adweb.com.awteamestimates.Service.JiraServices;
 import adweb.com.awteamestimates.Utilities.AppConstants;
 
 public class HomeActivity extends AppCompatActivity
@@ -104,9 +107,39 @@ public class HomeActivity extends AppCompatActivity
         mUserName = mPrefs.getString(getResources().getString(R.string.pref_userName), null);
 
 
-        GetUserDetails getUserDetails = new GetUserDetails();
         //Call execute
-        getUserDetails.execute();
+        try {
+            JiraServices. GetUserDetails getUserDetails = new JiraServices.GetUserDetails(mUserName,mBaseUrl);
+
+
+            UserModel mModel = getUserDetails.execute().get();
+
+            if(mModel != null ) {
+                String userFirstName = mModel.getDisplayName();
+                String userEmail = mModel.getEmailAddress();
+                //   String avrUrl = mModel.getAvatarUrls().get48x48();
+                System.out.println(userFirstName + "," + userEmail + ",");
+
+                mEdit.putString(getResources().getString(R.string.pref_userDisplayName), userFirstName);
+                mEdit.putString(getResources().getString(R.string.pref_userEmail), userEmail);
+                mEdit.commit();
+
+                txtUserEmail.setText(userEmail);
+                txtUserName.setText(userFirstName);
+            }
+            else
+            {
+                throw new RuntimeException("Could not fetch user details.");
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        catch (Exception ex)
+        {
+            Toast.makeText(this, ex.getMessage(), Toast.LENGTH_LONG).show();
+        }
 
 
         txtTemp.setOnClickListener(new View.OnClickListener() {
@@ -174,56 +207,6 @@ public class HomeActivity extends AppCompatActivity
     }
 
 
-    private class GetUserDetails extends AsyncTask <String, Void, UserModel> {
-
-        @Override
-        protected void onPostExecute(UserModel mModel) {
-            super.onPostExecute(mModel);
-
-            String userFirstName = mModel.getDisplayName();
-            String userEmail = mModel.getEmailAddress();
-        //   String avrUrl = mModel.getAvatarUrls().get48x48();
-            System.out.println(userFirstName +"," + userEmail+",");
-
-            mEdit.putString(getResources().getString(R.string.pref_userDisplayName), userFirstName);
-            mEdit.putString(getResources().getString(R.string.pref_userEmail), userEmail);
-            mEdit.commit();
-
-           txtUserEmail.setText(userEmail);
-           txtUserName.setText(userFirstName);
-
-        }
-
-        @Override
-        protected UserModel doInBackground(String... strings) {
-            String auth = new String(Base64.encode(mUserName+":"+ AppConstants.tempPass));
-            try {
-                String projects = invokeGetMethod(auth,mBaseUrl + ApiUrls.USER_DETAIL_URL + mUserName);
-                System.out.println(projects);
 
 
-
-                final ObjectMapper mapper = new ObjectMapper();//.configure(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT, false);;
-                UserModel mModel = mapper.readValue(projects, UserModel.class);
-                return  mModel;
-
-                } catch (Exception e) {
-                    System.out.println("Username or Password wrong!");
-                    e.printStackTrace();
-                }
-            return null;
-        }
-    }
-
-    private static String invokeGetMethod(String auth, String url) throws Exception, ClientHandlerException {
-        Client client = Client.create();
-        WebResource webResource = client.resource(url);
-        ClientResponse response = webResource.header("Authorization", "Basic " + auth).type("application/json")
-                .accept("application/json").get(ClientResponse.class);
-        int statusCode = response.getStatus();
-        if (statusCode == 401) {
-            throw new Exception("Invalid Username or Password");
-        }
-        return response.getEntity(String.class);
-    }
 }
