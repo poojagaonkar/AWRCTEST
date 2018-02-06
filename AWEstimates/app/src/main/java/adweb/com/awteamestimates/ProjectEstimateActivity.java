@@ -33,6 +33,7 @@ public class ProjectEstimateActivity extends AppCompatActivity {
         btnRemoveWeeks = findViewById(R.id.btnCounterDownW);
         etWeeks = findViewById(R.id.editDays);
 
+
         tableFooterLayout.setVisibility(View.INVISIBLE);
         btnExpandExtimates.setOnClickListener(new View.OnClickListener() {
             @Override
