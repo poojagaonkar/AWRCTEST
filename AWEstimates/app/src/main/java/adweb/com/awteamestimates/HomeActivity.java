@@ -17,7 +17,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -71,6 +73,7 @@ public class HomeActivity extends AppCompatActivity
     private TextView txtUserEmail;
     private  TextView txtTemp;
     private Spinner mProjectSpinner;
+    private ImageButton btnNext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +100,7 @@ public class HomeActivity extends AppCompatActivity
 
         txtUserName= (TextView)navigationView.getHeaderView(0).findViewById(R.id.txtUserName);
         txtUserEmail= (TextView)navigationView.getHeaderView(0).findViewById(R.id.txtUserEmail);
+        btnNext = findViewById(R.id.btnNext);
 
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         mEdit = mPrefs.edit();
@@ -159,9 +163,36 @@ public class HomeActivity extends AppCompatActivity
 
                }
 
-                ArrayAdapter<CharSequence> adapter = new ArrayAdapter(this,android.R.layout.simple_spinner_item, projectTitles);
+                final ArrayAdapter<CharSequence> adapter = new ArrayAdapter(this,android.R.layout.simple_spinner_item, projectTitles);
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                  mProjectSpinner.setAdapter(adapter);
+                mProjectSpinner.setAdapter(adapter);
+
+
+
+                mProjectSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+                        AppConstants.CurrentSelectedProject =adapter.getItem(i);
+
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> adapterView) {
+                        AppConstants.CurrentSelectedProject =adapter.getItem(0);
+
+                    }
+                });
+
+                btnNext.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        Intent mIntent = new Intent();
+                        mIntent.setClass(getApplicationContext(), ProjectEstimateActivity.class);
+                        startActivity(mIntent);
+                    }
+                });
             }
             else
             {
@@ -179,16 +210,7 @@ public class HomeActivity extends AppCompatActivity
         //endregion
 
 
-        txtTemp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
 
-                Intent mIntent = new Intent();
-                mIntent.setClass(getApplicationContext(), ProjectEstimateActivity.class);
-                startActivity(mIntent);
-
-            }
-        });
     }
 
 

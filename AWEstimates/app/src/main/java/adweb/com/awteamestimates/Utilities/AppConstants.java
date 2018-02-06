@@ -13,4 +13,5 @@ public class AppConstants {
 
     public  static  String tempPass;
     public static List<CurrentEstimatedIssue> FullProjectList;
+    public static CharSequence CurrentSelectedProject;
 }
