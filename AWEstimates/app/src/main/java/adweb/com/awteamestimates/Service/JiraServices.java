@@ -20,8 +20,11 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 import adweb.com.awteamestimates.HomeActivity;
+import adweb.com.awteamestimates.Models.EstimateModel;
 import adweb.com.awteamestimates.Models.LoginModel;
 import adweb.com.awteamestimates.Models.ProjectModel;
 import adweb.com.awteamestimates.Models.UserModel;
@@ -257,6 +260,103 @@ public class JiraServices {
             }
             return response.getEntity(String.class);
         }
+    }
+    //</editor-fold>
+
+
+    //<editor-fold desc="POST ==> Submit Estimate">
+    public static class SubmitEstimateTask extends AsyncTask<Void, Void, EstimateModel>  {
+
+        private final String mUserName;
+        private  final  String mBaseUrl;
+        private  final String mEstimateString;
+        private  final String mIssueKey;
+
+
+        public SubmitEstimateTask(String userName, String baseUrl, String estimateString, String issueKey) {
+            mUserName = userName;
+            mBaseUrl = baseUrl;
+            mEstimateString = estimateString;
+            mIssueKey = issueKey;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+        @Override
+        protected EstimateModel doInBackground(Void... params) {
+            // TODO: attempt authentication against a network service.
+
+            try {
+
+
+                String auth = new String(Base64.encode(mUserName+":"+ AppConstants.tempPass));
+
+                try {
+
+                    Map<String,Object> postBody = new HashMap<String,Object>();
+                    postBody.put("userName", mUserName);
+                    postBody.put("issueKey ", mIssueKey);
+                    postBody.put("teamEstimate ", mEstimateString);
+
+                    String projects = invokePostMethod(auth,mBaseUrl + ApiUrls.FETCH_PROJECTS_URL, postBody);
+                    System.out.println(projects);
+
+
+
+                    final ObjectMapper mapper = new ObjectMapper();
+                    EstimateModel mModel = mapper.readValue(projects, EstimateModel.class);
+                    return  mModel;
+
+                } catch (Exception e) {
+                    System.out.println("Username or Password wrong!");
+                    e.printStackTrace();
+                }
+
+
+
+            }
+            catch (Exception ex)
+            {
+                ex.printStackTrace();
+            }
+
+            // TODO: register the new account here.
+            return null;
+        }
+
+        private String invokePostMethod(String auth, String url, Map<String, Object> postBody)  throws Exception, ClientHandlerException {
+
+            String input = "{\"userName\":\"admin\",\"issueKey\":\"AD-1\",\"teamEstimate\":\"2w 2d\"}";
+
+            Client client = Client.create();
+                WebResource webResource = client.resource(mBaseUrl + ApiUrls.SUBMIT_ESTIMATION_URL );
+            ClientResponse response = webResource.type("application/json")
+                    .header("Authorization", "Basic " + auth)
+                    .post(ClientResponse.class, input);
+
+            if (response.getStatus() != 200) {
+                throw new RuntimeException("Failed : HTTP error code : "
+                        + response.getStatus());
+            }
+
+            System.out.println("Output from Server .... \n");
+            String output = response.getEntity(String.class);
+            System.out.println(output);
+            return  output;
+        }
+
+        @Override
+        protected void onPostExecute(final EstimateModel mModel) {
+
+        }
+
+        @Override
+        protected void onCancelled() {
+    }
     }
     //</editor-fold>
 
