@@ -1,7 +1,9 @@
 package adweb.com.awteamestimates;
 
+import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -202,11 +204,30 @@ public class HomeActivity extends AppCompatActivity
             // Handle the camera action
         } else if (id == R.id.nav_logout) {
 
+            AlertDialog.Builder mAlert = new AlertDialog.Builder(this, R.style.CustomDialog);
+            mAlert.setTitle("Logout");
+            mAlert.setMessage("Are you sure?");
+            mAlert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+
+                    mEdit.clear();
+                    mEdit.commit();
+                    startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                    finish();
+                }
+            });
+            mAlert.setNegativeButton("No", null);
+            mAlert.create().show();
+
+
+
 
         }
 
-        loadFragment(mFragment);
-
+        if(mFragment != null) {
+            loadFragment(mFragment);
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
