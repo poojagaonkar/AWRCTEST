@@ -1,14 +1,14 @@
-package adweb.com.awteamestimates;
+package adweb.com.awteamestimates.Fragments;
+
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.design.widget.TabLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -19,17 +19,18 @@ import android.widget.Toast;
 
 import com.google.common.collect.Collections2;
 
-import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 
 import adweb.com.awteamestimates.Models.CurrentEstimatedIssue;
 import adweb.com.awteamestimates.Models.EstimateModel;
-import adweb.com.awteamestimates.Models.ProjectModel;
+import adweb.com.awteamestimates.R;
 import adweb.com.awteamestimates.Service.JiraServices;
 import adweb.com.awteamestimates.Utilities.AppConstants;
 
-public class ProjectEstimateActivity extends AppCompatActivity implements View.OnClickListener {
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class ProjectEstimatationFragment extends Fragment implements View.OnClickListener{
 
     private TableLayout tableFooterLayout;
     private Button btnExpandExtimates;
@@ -53,40 +54,48 @@ public class ProjectEstimateActivity extends AppCompatActivity implements View.O
     private Iterator<CurrentEstimatedIssue> issueDetails;
     private String mIssueKey;
 
+    public ProjectEstimatationFragment() {
+        // Required empty public constructor
+    }
+
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_project_estimate);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.content_project_estimate, container, false);
 
-        tableFooterLayout = (TableLayout) findViewById(R.id.tableSlidingFooter);
-        btnExpandExtimates = (Button) findViewById(R.id.btnEstimates);
-        btnSubmit = findViewById(R.id.btnSubmit);
+    }
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-        btnAddWeeks = findViewById(R.id.btnCounterUpW);
-        btnRemoveWeeks = findViewById(R.id.btnCounterDownW);
-        btnAddDays = findViewById(R.id.btnCounterUpD);
-        btnRemoveDays = findViewById(R.id.btnCounterDownD);
-        btnAddHours = findViewById(R.id.btnCounterUpH);
-        btnRemoveHours = findViewById(R.id.btnCounterDownH);
-        btnAddMins = findViewById(R.id.btnCounterUpM);
-        btnRemoveMins = findViewById(R.id.btnCounterDownM);
+        tableFooterLayout = (TableLayout) view.findViewById(R.id.tableSlidingFooter);
+        btnExpandExtimates = (Button) view.findViewById(R.id.btnEstimates);
+        btnSubmit = view.findViewById(R.id.btnSubmit);
 
-        tableRowWeek = findViewById(R.id.tableRowWeek);
+        btnAddWeeks = view.findViewById(R.id.btnCounterUpW);
+        btnRemoveWeeks = view.findViewById(R.id.btnCounterDownW);
+        btnAddDays = view.findViewById(R.id.btnCounterUpD);
+        btnRemoveDays = view.findViewById(R.id.btnCounterDownD);
+        btnAddHours = view.findViewById(R.id.btnCounterUpH);
+        btnRemoveHours = view.findViewById(R.id.btnCounterDownH);
+        btnAddMins = view.findViewById(R.id.btnCounterUpM);
+        btnRemoveMins = view.findViewById(R.id.btnCounterDownM);
+
+        tableRowWeek = view.findViewById(R.id.tableRowWeek);
         etWeeks = (EditText) tableRowWeek.getChildAt(1);
-        tableRowDays = findViewById(R.id.tableRowDays);
+        tableRowDays = view.findViewById(R.id.tableRowDays);
         etDays = (EditText) tableRowDays.getChildAt(1);
-        tableRowHours = findViewById(R.id.tableRowHours);
+        tableRowHours = view.findViewById(R.id.tableRowHours);
         etHours = (EditText) tableRowHours.getChildAt(1);
-        tableRowMin = findViewById(R.id.tableRowMins);
+        tableRowMin = view.findViewById(R.id.tableRowMins);
         etMins = (EditText) tableRowMin.getChildAt(1);
 
-        txtProjectName = findViewById(R.id.txtProjectName);
-        txtIssueTitle = findViewById(R.id.txtIssueTitle);
+        txtProjectName = view.findViewById(R.id.txtProjectName);
+        txtIssueTitle = view.findViewById(R.id.txtIssueTitle);
 
 
-        mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         mEdit = mPrefs.edit();
 
 
@@ -118,8 +127,8 @@ public class ProjectEstimateActivity extends AppCompatActivity implements View.O
             }
         });
 
-       issueDetails = Collections2.filter(AppConstants.FullProjectList, user -> user.getProjectName().equals(AppConstants.CurrentSelectedProject)).iterator();
-       CurrentEstimatedIssue currentIssue = issueDetails.next();
+        issueDetails = Collections2.filter(AppConstants.FullProjectList, user -> user.getProjectName().equals(AppConstants.CurrentSelectedProject)).iterator();
+        CurrentEstimatedIssue currentIssue = issueDetails.next();
         txtIssueTitle.setText(currentIssue.getIssueTitle());
         txtProjectName.setText(AppConstants.CurrentSelectedProject);
         mIssueKey = currentIssue.getIssueKey();
@@ -135,8 +144,18 @@ public class ProjectEstimateActivity extends AppCompatActivity implements View.O
         btnRemoveMins.setOnClickListener(this);
 
         btnSubmit.setOnClickListener(this);
-
     }
+
+//    @Override
+//    protected void onCreate(Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+////        setContentView(R.layout.activity_project_estimate);
+////        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+////        setSupportActionBar(toolbar);
+//
+//
+//
+//    }
 
     @Override
     public void onClick(View view) {
@@ -204,7 +223,7 @@ public class ProjectEstimateActivity extends AppCompatActivity implements View.O
                             EstimateModel mModel = postProjectEstimate.execute().get();
 
                             if (mModel != null && mModel.getSuccess() == 200) {
-                                Toast.makeText(this, "Estimate submitted successfully", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getActivity(), "Estimate submitted successfully", Toast.LENGTH_LONG).show();
                             }
                         } catch (Exception e) {
                             e.printStackTrace();

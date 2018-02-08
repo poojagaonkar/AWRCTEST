@@ -1,7 +1,6 @@
 package adweb.com.awteamestimates.Fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
@@ -24,7 +23,6 @@ import java.util.concurrent.ExecutionException;
 
 import adweb.com.awteamestimates.Models.CurrentEstimatedIssue;
 import adweb.com.awteamestimates.Models.ProjectModel;
-import adweb.com.awteamestimates.ProjectEstimateActivity;
 import adweb.com.awteamestimates.R;
 import adweb.com.awteamestimates.Service.JiraServices;
 import adweb.com.awteamestimates.Utilities.AppConstants;
@@ -92,7 +90,7 @@ public class SelectProjectFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View mView = inflater.inflate(R.layout.select_project_layout, container, false);
+        View mView = inflater.inflate(R.layout.select_project_layout, null, false);
         return mView;
     }
 
@@ -149,9 +147,10 @@ public class SelectProjectFragment extends Fragment {
                     @Override
                     public void onClick(View view) {
 
-                        Intent mIntent = new Intent();
-                        mIntent.setClass(getActivity(), ProjectEstimateActivity.class);
-                        startActivity(mIntent);
+                        loadFragment(new ProjectEstimatationFragment());
+//                        Intent mIntent = new Intent();
+//                        mIntent.setClass(getActivity(), ProjectEstimateActivity.class);
+//                        startActivity(mIntent);
                     }
                 });
             }
@@ -171,6 +170,15 @@ public class SelectProjectFragment extends Fragment {
         //endregion
 
 
+    }
+    private void loadFragment(Fragment fragment) {
+        // create a FragmentManager
+        android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
+        // create a FragmentTransaction to begin the transaction and replace the Fragment
+        android.support.v4.app.FragmentTransaction fragmentTransaction = fm.beginTransaction();
+        // replace the FrameLayout with new Fragment
+        fragmentTransaction.replace(R.id.frameLayout, fragment);
+        fragmentTransaction.commit(); // save the changes
     }
 
     // TODO: Rename method, update argument and hook method into UI event
