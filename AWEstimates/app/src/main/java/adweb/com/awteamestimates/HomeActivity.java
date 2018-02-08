@@ -1,13 +1,17 @@
 package adweb.com.awteamestimates;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -52,6 +56,7 @@ import java.util.concurrent.ExecutionException;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import adweb.com.awteamestimates.Fragments.SelectProjectFragment;
 import adweb.com.awteamestimates.Models.CurrentEstimatedIssue;
 import adweb.com.awteamestimates.Models.LoginModel;
 import adweb.com.awteamestimates.Models.ProjectModel;
@@ -61,7 +66,7 @@ import adweb.com.awteamestimates.Service.JiraServices;
 import adweb.com.awteamestimates.Utilities.AppConstants;
 
 public class HomeActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, SelectProjectFragment.OnFragmentInteractionListener {
 
     public SharedPreferences mPrefs ;
     public  SharedPreferences.Editor mEdit ;
@@ -82,28 +87,27 @@ public class HomeActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        txtTemp = (TextView)findViewById(R.id.txtSelect);
-
-        mProjectSpinner = findViewById(R.id.spinProjectName);
-
-
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+
+        txtUserName= (TextView)navigationView.getHeaderView(0).findViewById(R.id.txtUserName);
+        txtUserEmail= (TextView)navigationView.getHeaderView(0).findViewById(R.id.txtUserEmail);
+
+
+
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        mEdit = mPrefs.edit();
+
+
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
 
-        txtUserName= (TextView)navigationView.getHeaderView(0).findViewById(R.id.txtUserName);
-        txtUserEmail= (TextView)navigationView.getHeaderView(0).findViewById(R.id.txtUserEmail);
-        btnNext = findViewById(R.id.btnNext);
-
-        mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        mEdit = mPrefs.edit();
 
 
         mBaseUrl = mPrefs.getString(getResources().getString(R.string.pref_baseUrl), null);
@@ -146,69 +150,8 @@ public class HomeActivity extends AppCompatActivity
 
 
 
-        //region Get Project Details
-        try {
-            JiraServices. GetProjectDetails getProjectDetails = new JiraServices.GetProjectDetails(mUserName,mBaseUrl);
-            ProjectModel mModel = getProjectDetails.execute().get();
 
-            if(mModel != null ) {
-                AppConstants.FullProjectList = mModel.getCurrentEstimatedIssue();
-                List<String> projectTitles  = new ArrayList<>();
-
-                for(CurrentEstimatedIssue mIssue : AppConstants.FullProjectList )
-               {
-
-                   projectTitles.add(mIssue.getProjectName());
-                   System.out.println(mIssue.getIssueKey() +"\n" + mIssue.getIssueTitle() +"\n"+ mIssue.getProjectKey() +"\n"+ mIssue.getProjectName());
-
-               }
-
-                final ArrayAdapter<CharSequence> adapter = new ArrayAdapter(this,android.R.layout.simple_spinner_item, projectTitles);
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                mProjectSpinner.setAdapter(adapter);
-
-
-
-                mProjectSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
-                        AppConstants.CurrentSelectedProject =adapter.getItem(i);
-
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> adapterView) {
-                        AppConstants.CurrentSelectedProject =adapter.getItem(0);
-
-                    }
-                });
-
-                btnNext.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-
-                        Intent mIntent = new Intent();
-                        mIntent.setClass(getApplicationContext(), ProjectEstimateActivity.class);
-                        startActivity(mIntent);
-                    }
-                });
-            }
-            else
-            {
-                throw new RuntimeException("Could not fetch project details.");
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-        catch (Exception ex)
-        {
-            Toast.makeText(this, ex.getMessage(), Toast.LENGTH_LONG).show();
-        }
-        //endregion
-
+        loadFragment(new SelectProjectFragment());
 
 
     }
@@ -252,13 +195,18 @@ public class HomeActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
+        Fragment mFragment = null;
         if (id == R.id.nav_project) {
+
+            mFragment = new SelectProjectFragment();
             // Handle the camera action
         } else if (id == R.id.nav_logout) {
 
 
         }
+
+        loadFragment(mFragment);
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -266,6 +214,19 @@ public class HomeActivity extends AppCompatActivity
     }
 
 
+    private void loadFragment(Fragment fragment) {
+        // create a FragmentManager
+                android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        // create a FragmentTransaction to begin the transaction and replace the Fragment
+                android.support.v4.app.FragmentTransaction fragmentTransaction = fm.beginTransaction();
+        // replace the FrameLayout with new Fragment
+                fragmentTransaction.replace(R.id.frameLayout, fragment);
+                fragmentTransaction.commit(); // save the changes
+    }
 
 
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
 }

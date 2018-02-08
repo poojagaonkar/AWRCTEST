@@ -197,7 +197,7 @@ public class ProjectEstimateActivity extends AppCompatActivity implements View.O
 
                     String mEstimateString = GetEstimatesString(weekCounter, dayCounter, hourCounter, minsCounter);
 
-                    if (mEstimateString.isEmpty()) {
+                    if (!mEstimateString.isEmpty()) {
                         try {
 
                             JiraServices.SubmitEstimateTask postProjectEstimate = new JiraServices.SubmitEstimateTask(mUserName, mBaseUrl, mEstimateString, mIssueKey);
