@@ -107,22 +107,29 @@ public class SelectProjectFragment extends Fragment {
 
         //region Get Project Details
         try {
-            JiraServices. GetProjectDetails getProjectDetails = new JiraServices.GetProjectDetails(mUserName,mBaseUrl);
-            ProjectModel mModel = getProjectDetails.execute().get();
 
-            if(mModel != null ) {
-                AppConstants.FullProjectList = mModel.getCurrentEstimatedIssue();
-                List<String> projectTitles  = new ArrayList<>();
+            if(AppConstants.ProjectTitles == null || AppConstants.ProjectTitles.size() ==0) {
+                JiraServices.GetProjectDetails getProjectDetails = new JiraServices.GetProjectDetails(mUserName, mBaseUrl);
+                ProjectModel mModel = getProjectDetails.execute().get();
 
-                for(CurrentEstimatedIssue mIssue : AppConstants.FullProjectList )
-                {
+                if (mModel != null) {
+                    AppConstants.FullProjectList = mModel.getCurrentEstimatedIssue();
+                    AppConstants.ProjectTitles = new ArrayList<>();
 
-                    projectTitles.add(mIssue.getProjectName());
-                    System.out.println(mIssue.getIssueKey() +"\n" + mIssue.getIssueTitle() +"\n"+ mIssue.getProjectKey() +"\n"+ mIssue.getProjectName());
+                    for (CurrentEstimatedIssue mIssue : AppConstants.FullProjectList) {
 
+                        AppConstants.ProjectTitles.add(mIssue.getProjectName());
+                        System.out.println(mIssue.getIssueKey() + "\n" + mIssue.getIssueTitle() + "\n" + mIssue.getProjectKey() + "\n" + mIssue.getProjectName());
+
+                    }
                 }
+                else
+                {
+                    throw new RuntimeException("Could not fetch project details.");
+                }
+            }
 
-                final ArrayAdapter<CharSequence> adapter = new ArrayAdapter(getActivity(),android.R.layout.simple_spinner_item, projectTitles);
+                final ArrayAdapter<CharSequence> adapter = new ArrayAdapter(getActivity(),android.R.layout.simple_spinner_item,   AppConstants.ProjectTitles);
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 mProjectSpinner.setAdapter(adapter);
 
@@ -153,11 +160,8 @@ public class SelectProjectFragment extends Fragment {
 //                        startActivity(mIntent);
                     }
                 });
-            }
-            else
-            {
-                throw new RuntimeException("Could not fetch project details.");
-            }
+
+
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {

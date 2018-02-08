@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Build;
@@ -36,6 +37,15 @@ public class DialogHelper {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public  static void ShowAlert(Activity mActivity, String title, String message)
+    {
+        AlertDialog.Builder mAlert = new AlertDialog.Builder(mActivity, R.style.CustomDialog);
+        mAlert.setTitle(title);
+        mAlert.setMessage(message);
+        mAlert.setPositiveButton("Ok", null);
+        mAlert.create().show();
     }
 
 

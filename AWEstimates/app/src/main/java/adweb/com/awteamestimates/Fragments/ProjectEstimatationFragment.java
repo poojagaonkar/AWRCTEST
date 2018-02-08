@@ -1,6 +1,9 @@
 package adweb.com.awteamestimates.Fragments;
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -24,12 +27,14 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import adweb.com.awteamestimates.LoginActivity;
 import adweb.com.awteamestimates.Models.CurrentEstimatedIssue;
 import adweb.com.awteamestimates.Models.EstimateModel;
 import adweb.com.awteamestimates.Models.MoreDetailModel;
 import adweb.com.awteamestimates.R;
 import adweb.com.awteamestimates.Service.JiraServices;
 import adweb.com.awteamestimates.Utilities.AppConstants;
+import adweb.com.awteamestimates.Utilities.DialogHelper;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -238,10 +243,16 @@ public class ProjectEstimatationFragment extends Fragment implements View.OnClic
                             EstimateModel mModel = postProjectEstimate.execute().get();
 
                             if (mModel != null && mModel.getSuccess() == 200) {
-                                Toast.makeText(getActivity(), "Estimate submitted successfully", Toast.LENGTH_LONG).show();
+
+                                DialogHelper.ShowAlert(getActivity(), "", "Estimate submitted successfully");
+
+                            }
+                            else {
+
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
+                            DialogHelper.ShowAlert(getActivity(), "Error", e.getMessage());
                         }
 
                     } else {

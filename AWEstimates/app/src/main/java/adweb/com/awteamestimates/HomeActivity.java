@@ -58,6 +58,7 @@ import java.util.concurrent.ExecutionException;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import adweb.com.awteamestimates.Fragments.ProjectEstimatationFragment;
 import adweb.com.awteamestimates.Fragments.SelectProjectFragment;
 import adweb.com.awteamestimates.Models.CurrentEstimatedIssue;
 import adweb.com.awteamestimates.Models.LoginModel;
@@ -81,6 +82,7 @@ public class HomeActivity extends AppCompatActivity
     private  TextView txtTemp;
     private Spinner mProjectSpinner;
     private ImageButton btnNext;
+    private TextView txtToolBarTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,13 +90,14 @@ public class HomeActivity extends AppCompatActivity
         setContentView(R.layout.activity_home);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
 
         txtUserName= (TextView)navigationView.getHeaderView(0).findViewById(R.id.txtUserName);
         txtUserEmail= (TextView)navigationView.getHeaderView(0).findViewById(R.id.txtUserEmail);
-
+        txtToolBarTitle = (TextView)toolbar.findViewById(R.id.txtToolbarTitle);
 
 
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -116,7 +119,14 @@ public class HomeActivity extends AppCompatActivity
         mUserName = mPrefs.getString(getResources().getString(R.string.pref_userName), null);
 
 
+        loadFragment(new SelectProjectFragment());
 
+
+    }
+
+
+    private void GetUserDetails()
+    {
         //region Get user details
         try {
             JiraServices. GetUserDetails getUserDetails = new JiraServices.GetUserDetails(mUserName,mBaseUrl);
@@ -149,17 +159,44 @@ public class HomeActivity extends AppCompatActivity
             Toast.makeText(this, ex.getMessage(), Toast.LENGTH_LONG).show();
         }
         //endregion
-
-
-
-
-        loadFragment(new SelectProjectFragment());
-
-
     }
 
+    private  void GetProjectDetails()
+    {
+        //region Get Project Details
+        try {
+            JiraServices. GetProjectDetails getProjectDetails = new JiraServices.GetProjectDetails(mUserName,mBaseUrl);
+            ProjectModel mModel = getProjectDetails.execute().get();
 
+            if(mModel != null ) {
+                AppConstants.FullProjectList = mModel.getCurrentEstimatedIssue();
+                AppConstants.ProjectTitles  = new ArrayList<>();
 
+                for(CurrentEstimatedIssue mIssue : AppConstants.FullProjectList )
+                {
+
+                    AppConstants.ProjectTitles.add(mIssue.getProjectName());
+                    System.out.println(mIssue.getIssueKey() +"\n" + mIssue.getIssueTitle() +"\n"+ mIssue.getProjectKey() +"\n"+ mIssue.getProjectName());
+
+                }
+
+            }
+            else
+            {
+                throw new RuntimeException("Could not fetch project details.");
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        catch (Exception ex)
+        {
+            Toast.makeText(this, ex.getMessage(), Toast.LENGTH_LONG).show();
+        }
+        //endregion
+
+    }
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -186,6 +223,24 @@ public class HomeActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_refresh) {
+
+            GetUserDetails();
+
+            Fragment f =this.getSupportFragmentManager().findFragmentById(R.id.frameLayout);
+//            if (f.getClass().equals(SelectProjectFragment.class)) {
+//
+//
+//
+//            }
+//            else if(f.getClass().equals(ProjectEstimatationFragment.class))
+//            {
+//
+//            }
+
+            final android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.detach(f);
+            ft.attach(f);
+            ft.commit();
             return true;
         }
 
@@ -201,6 +256,7 @@ public class HomeActivity extends AppCompatActivity
         if (id == R.id.nav_project) {
 
             mFragment = new SelectProjectFragment();
+            txtToolBarTitle.setText("ESTIMATION");
             // Handle the camera action
         } else if (id == R.id.nav_logout) {
 
