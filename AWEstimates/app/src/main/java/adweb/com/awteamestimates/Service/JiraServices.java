@@ -30,6 +30,7 @@ import adweb.com.awteamestimates.HomeActivity;
 import adweb.com.awteamestimates.LoginActivity;
 import adweb.com.awteamestimates.Models.EstimateModel;
 import adweb.com.awteamestimates.Models.LoginModel;
+import adweb.com.awteamestimates.Models.MoreDetailModel;
 import adweb.com.awteamestimates.Models.ProjectModel;
 import adweb.com.awteamestimates.Models.UserModel;
 import adweb.com.awteamestimates.R;
@@ -376,4 +377,60 @@ public class JiraServices {
     }
     //</editor-fold>
 
+
+    //<editor-fold desc="GET ==> Get More Details">
+    public static class GetMoreDetails extends AsyncTask <String, Void, MoreDetailModel> {
+
+        private final String mUserName;
+        private final String mBaseUrl;
+        private final String mIssueKey;
+
+        public  GetMoreDetails(String userName, String baseUrl, String issueKey)
+        {
+            mUserName = userName;
+            mBaseUrl = baseUrl;
+            mIssueKey = issueKey;
+        }
+
+        @Override
+        protected void onPostExecute(MoreDetailModel mModel) {
+            super.onPostExecute(mModel);
+
+
+
+        }
+
+        @Override
+        protected MoreDetailModel doInBackground(String... strings) {
+            String auth = new String(Base64.encode(mUserName+":"+ AppConstants.tempPass));
+            try {
+                String projects = invokeGetMethod(auth,mBaseUrl + ApiUrls.MORE_DETAILS_URL + mIssueKey);
+                System.out.println(projects);
+
+
+
+                final ObjectMapper mapper = new ObjectMapper();//.configure(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT, false);;
+                MoreDetailModel mModel = mapper.readValue(projects, MoreDetailModel.class);
+                return  mModel;
+
+            } catch (Exception e) {
+                System.out.println("Username or Password wrong!");
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        private  String invokeGetMethod(String auth, String url) throws Exception, ClientHandlerException {
+            Client client = Client.create();
+            WebResource webResource = client.resource(url);
+            ClientResponse response = webResource.header("Authorization", "Basic " + auth).type("application/json")
+                    .accept("application/json").get(ClientResponse.class);
+            int statusCode = response.getStatus();
+            if (statusCode == 401) {
+                throw new Exception("Invalid Username or Password");
+            }
+            return response.getEntity(String.class);
+        }
+    }
+    //</editor-fold>
 }

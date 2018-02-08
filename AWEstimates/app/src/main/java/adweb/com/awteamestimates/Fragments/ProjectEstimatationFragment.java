@@ -1,9 +1,6 @@
 package adweb.com.awteamestimates.Fragments;
 
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -18,19 +15,14 @@ import android.widget.ImageButton;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.common.collect.Collections2;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 
-import adweb.com.awteamestimates.LoginActivity;
 import adweb.com.awteamestimates.Models.CurrentEstimatedIssue;
 import adweb.com.awteamestimates.Models.EstimateModel;
-import adweb.com.awteamestimates.Models.MoreDetailModel;
 import adweb.com.awteamestimates.R;
 import adweb.com.awteamestimates.Service.JiraServices;
 import adweb.com.awteamestimates.Utilities.AppConstants;
@@ -139,17 +131,17 @@ public class ProjectEstimatationFragment extends Fragment implements View.OnClic
         });
 
         AppConstants.CurrentIssueDetails = Collections2.filter(AppConstants.FullProjectList, user -> user.getProjectName().equals(AppConstants.CurrentSelectedProject)).iterator();
-        CurrentEstimatedIssue currentIssue = AppConstants.CurrentIssueDetails.next();
-        txtIssueTitle.setText(currentIssue.getIssueTitle());
+        AppConstants.CurrentEstimatedIssue  = AppConstants.CurrentIssueDetails.next();
+        txtIssueTitle.setText(AppConstants.CurrentEstimatedIssue.getIssueTitle());
         txtProjectName.setText(AppConstants.CurrentSelectedProject);
-        mIssueKey = currentIssue.getIssueKey();
+        mIssueKey = AppConstants.CurrentEstimatedIssue.getIssueKey();
 
         AppConstants.CurrentProjectDetailMap= new HashMap<String, String>();
-        AppConstants.CurrentProjectDetailMap.put("Project Key :  ", currentIssue.getIssueKey());
-        AppConstants.CurrentProjectDetailMap.put("Project Name :  ", currentIssue.getProjectName());
-        AppConstants.CurrentProjectDetailMap.put("Issue Key :  ", currentIssue.getIssueKey());
-        AppConstants.CurrentProjectDetailMap.put("Issue Title :  ", currentIssue.getIssueTitle());
-        AppConstants.CurrentProjectDetailMap.put("Avatar :  ", String.valueOf(currentIssue.getAvatar()));
+        AppConstants.CurrentProjectDetailMap.put("Project Key :  ", AppConstants.CurrentEstimatedIssue.getIssueKey());
+        AppConstants.CurrentProjectDetailMap.put("Project Name :  ", AppConstants.CurrentEstimatedIssue.getProjectName());
+        AppConstants.CurrentProjectDetailMap.put("Issue Key :  ", AppConstants.CurrentEstimatedIssue.getIssueKey());
+        AppConstants.CurrentProjectDetailMap.put("Issue Title :  ", AppConstants.CurrentEstimatedIssue.getIssueTitle());
+        AppConstants.CurrentProjectDetailMap.put("Avatar :  ", String.valueOf(AppConstants.CurrentEstimatedIssue.getAvatar()));
 
 
         btnAddWeeks.setOnClickListener(this);
