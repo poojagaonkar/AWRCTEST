@@ -196,22 +196,27 @@ public class ProjectEstimateActivity extends AppCompatActivity implements View.O
                 case R.id.btnSubmit:
 
                     String mEstimateString = GetEstimatesString(weekCounter, dayCounter, hourCounter, minsCounter);
-              try {
 
-                  JiraServices. SubmitEstimateTask postProjectEstimate = new JiraServices.SubmitEstimateTask(mUserName,mBaseUrl, mEstimateString, mIssueKey);
-                  EstimateModel mModel = postProjectEstimate.execute().get();
+                    if (mEstimateString.isEmpty()) {
+                        try {
 
-                  if(mModel !=null && mModel.getSuccess() == 200)
-                  {
-                      Toast.makeText(this,"Estimate submitted successfully", Toast.LENGTH_LONG).show();
-                  }
+                            JiraServices.SubmitEstimateTask postProjectEstimate = new JiraServices.SubmitEstimateTask(mUserName, mBaseUrl, mEstimateString, mIssueKey);
+                            EstimateModel mModel = postProjectEstimate.execute().get();
 
-                  break;
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                            if (mModel != null && mModel.getSuccess() == 200) {
+                                Toast.makeText(this, "Estimate submitted successfully", Toast.LENGTH_LONG).show();
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                    } else {
+
                     }
+                    break;
+
             }
-        } catch (Exception e) {
+        }catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -241,7 +246,10 @@ public class ProjectEstimateActivity extends AppCompatActivity implements View.O
             }
 
             estimateString = sWeek + sDay + sHour + sMins;
-            estimateString = estimateString.replace("-", "");
+
+            if(estimateString.contains("-")) {
+                estimateString = estimateString.replace("-", "").trim();
+            }
         }
         catch (Exception ex)
         {

@@ -53,6 +53,7 @@ import adweb.com.awteamestimates.Models.UserModel;
 import adweb.com.awteamestimates.Service.ApiUrls;
 import adweb.com.awteamestimates.Service.JiraServices;
 import adweb.com.awteamestimates.Utilities.AppConstants;
+import adweb.com.awteamestimates.Utilities.DialogHelper;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -200,42 +201,21 @@ public class LoginActivity extends AppCompatActivity  {
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            showProgress(true);
+           //showProgress(true);
             try {
 
                 mAuthTask = null;
-                 showProgress(false);
-                mAuthTask = new  JiraServices.UserLoginTask(userName, password,baseUrl);
+                mAuthTask = new  JiraServices.UserLoginTask(this, userName, password,baseUrl);
 
-                LoginModel mModel = mAuthTask.execute().get();
+                mAuthTask.execute();
 
+               // showProgress(false);
 
-                if (mModel != null) {
-
-                    mUserSessionName = mModel.getSession().getName() ;
-                    mUserSessionValue = mModel.getSession().getValue();
-
-                    //On successful login, save the variables for next use.
-                    editor.putString(getResources().getString(R.string.pref_sessionUserName), mUserSessionName);
-                    editor.putString(getResources().getString(R.string.pref_sessionUserValue), mUserSessionValue);
-                    editor.putString(getResources().getString(R.string.pref_baseUrl), baseUrl);
-                    editor.putString(getResources().getString(R.string.pref_userName), userName);
-                    AppConstants.tempPass = password;
-                    editor.commit();
-
-                    //Start next activity
-                    Intent mIntent = new Intent(getApplicationContext(), HomeActivity.class);
-                    startActivity(mIntent);
-                    finish();
-                } else {
-                    mPasswordView.setError(getString(R.string.error_incorrect_password));
-                    mPasswordView.requestFocus();
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
+
+
         }
     }
 

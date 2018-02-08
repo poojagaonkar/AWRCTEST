@@ -1,5 +1,8 @@
 package adweb.com.awteamestimates.Service;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -24,12 +27,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import adweb.com.awteamestimates.HomeActivity;
+import adweb.com.awteamestimates.LoginActivity;
 import adweb.com.awteamestimates.Models.EstimateModel;
 import adweb.com.awteamestimates.Models.LoginModel;
 import adweb.com.awteamestimates.Models.ProjectModel;
 import adweb.com.awteamestimates.Models.UserModel;
 import adweb.com.awteamestimates.R;
 import adweb.com.awteamestimates.Utilities.AppConstants;
+import adweb.com.awteamestimates.Utilities.DialogHelper;
 
 /**
  * Created by PoojaGaonkar on 2/6/2018.
@@ -38,23 +43,32 @@ import adweb.com.awteamestimates.Utilities.AppConstants;
 public class JiraServices {
 
 
+
     //<editor-fold desc="POST ==> Login">
     public static class UserLoginTask extends AsyncTask<Void, Void, LoginModel> {
 
         private final String mUserName;
         private final String mPassword;
         private  final  String mBaseUrl;
+        private final Activity mContext;
+        private ProgressDialog pd;
+        private SharedPreferences mPrefs;
+        private SharedPreferences.Editor editor;
 
-
-        public UserLoginTask(String userName, String password, String baseUrl) {
+        public UserLoginTask(Activity loginActivity, String userName, String password, String baseUrl) {
             mUserName = userName;
             mPassword = password;
             mBaseUrl = baseUrl;
+            mContext = loginActivity;
         }
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+            editor = mPrefs.edit();
+
+            //DialogHelper.ShowProgressDialog(mContext, false, "");
 
         }
 
@@ -124,27 +138,32 @@ public class JiraServices {
 
         @Override
         protected void onPostExecute(final LoginModel mModel) {
-//            mAuthTask = null;
-//            showProgress(false);
 
-//            if (mModel != null) {
-//
-//                //On successful login, save the variables for next use.
-//                editor.putString(getResources().getString(R.string.pref_sessionUserName), mUserSessionName);
-//                editor.putString(getResources().getString(R.string.pref_sessionUserValue), mUserSessionValue);
-//                editor.putString(getResources().getString(R.string.pref_baseUrl), mBaseUrl);
-//                editor.putString(getResources().getString(R.string.pref_userName), mUserName);
-//                AppConstants.tempPass = mPassword;
-//                editor.commit();
-//
-//                //Start next activity
-//                Intent mIntent = new Intent(getApplicationContext(), HomeActivity.class);
-//                startActivity(mIntent);
-//                finish();
-//            } else {
-//                mPasswordView.setError(getString(R.string.error_incorrect_password));
+
+            if (mModel != null) {
+
+                String mUserSessionName = mModel.getSession().getName() ;
+                String mUserSessionValue = mModel.getSession().getValue();
+
+                //On successful login, save the variables for next use.
+                editor.putString(mContext.getResources().getString(R.string.pref_sessionUserName), mUserSessionName);
+                editor.putString(mContext.getResources().getString(R.string.pref_sessionUserValue), mUserSessionValue);
+                editor.putString(mContext.getResources().getString(R.string.pref_baseUrl), mBaseUrl);
+                editor.putString(mContext.getResources().getString(R.string.pref_userName), mUserName);
+                AppConstants.tempPass = mPassword;
+                editor.commit();
+
+                //Start next activity
+                Intent mIntent = new Intent(mContext, HomeActivity.class);
+                mContext.startActivity(mIntent);
+                mContext.finish();
+            } else {
+//                mPasswordView.setError(getString(R.string.login_failed));
 //                mPasswordView.requestFocus();
-//            }
+            }
+
+            //DialogHelper.ShowProgressDialog(mContext, true, "");
+
         }
 
         @Override
@@ -297,12 +316,8 @@ public class JiraServices {
 
                 try {
 
-                    Map<String,Object> postBody = new HashMap<String,Object>();
-                    postBody.put("userName", mUserName);
-                    postBody.put("issueKey ", mIssueKey);
-                    postBody.put("teamEstimate ", mEstimateString);
 
-                    String projects = invokePostMethod(auth,mBaseUrl + ApiUrls.FETCH_PROJECTS_URL, postBody);
+                    String projects = invokePostMethod(auth,mBaseUrl + ApiUrls.FETCH_PROJECTS_URL);
                     System.out.println(projects);
 
 
@@ -328,9 +343,10 @@ public class JiraServices {
             return null;
         }
 
-        private String invokePostMethod(String auth, String url, Map<String, Object> postBody)  throws Exception, ClientHandlerException {
+        private String invokePostMethod(String auth, String url)  throws Exception, ClientHandlerException {
 
-            String input = "{\"userName\":\"admin\",\"issueKey\":\"AD-1\",\"teamEstimate\":\"2w 2d\"}";
+            String input = "{\"userName\":\""+mUserName+"\",\"issueKey\":\""+mIssueKey+"\",\"teamEstimate\":\""+mEstimateString+"\"}";
+
 
             Client client = Client.create();
                 WebResource webResource = client.resource(mBaseUrl + ApiUrls.SUBMIT_ESTIMATION_URL );
