@@ -10,16 +10,17 @@
         android:id="@+id/txtFieldName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:text="TextView"
         android:textColor="@color/colorAccent"
-        android:textSize="15sp" />
+        android:textSize="15sp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/txtIssueDetail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_gravity="left"
+        android:gravity="left"
         android:text="TextView"
         android:textColor="@color/colorAccent"
         android:textSize="15sp" />

@@ -19,10 +19,14 @@ import android.widget.Toast;
 
 import com.google.common.collect.Collections2;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 import adweb.com.awteamestimates.Models.CurrentEstimatedIssue;
 import adweb.com.awteamestimates.Models.EstimateModel;
+import adweb.com.awteamestimates.Models.MoreDetailModel;
 import adweb.com.awteamestimates.R;
 import adweb.com.awteamestimates.Service.JiraServices;
 import adweb.com.awteamestimates.Utilities.AppConstants;
@@ -53,6 +57,7 @@ public class ProjectEstimatationFragment extends Fragment implements View.OnClic
     private Button btnSubmit;
     private Iterator<CurrentEstimatedIssue> issueDetails;
     private String mIssueKey;
+    private TextView txtMoreDetails;
 
     public ProjectEstimatationFragment() {
         // Required empty public constructor
@@ -93,6 +98,7 @@ public class ProjectEstimatationFragment extends Fragment implements View.OnClic
 
         txtProjectName = view.findViewById(R.id.txtProjectName);
         txtIssueTitle = view.findViewById(R.id.txtIssueTitle);
+        txtMoreDetails = view.findViewById(R.id.txtMoreDetails);
 
 
         mPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -127,11 +133,19 @@ public class ProjectEstimatationFragment extends Fragment implements View.OnClic
             }
         });
 
-        issueDetails = Collections2.filter(AppConstants.FullProjectList, user -> user.getProjectName().equals(AppConstants.CurrentSelectedProject)).iterator();
-        CurrentEstimatedIssue currentIssue = issueDetails.next();
+        AppConstants.CurrentIssueDetails = Collections2.filter(AppConstants.FullProjectList, user -> user.getProjectName().equals(AppConstants.CurrentSelectedProject)).iterator();
+        CurrentEstimatedIssue currentIssue = AppConstants.CurrentIssueDetails.next();
         txtIssueTitle.setText(currentIssue.getIssueTitle());
         txtProjectName.setText(AppConstants.CurrentSelectedProject);
         mIssueKey = currentIssue.getIssueKey();
+
+        AppConstants.CurrentProjectDetailMap= new HashMap<String, String>();
+        AppConstants.CurrentProjectDetailMap.put("Project Key :  ", currentIssue.getIssueKey());
+        AppConstants.CurrentProjectDetailMap.put("Project Name :  ", currentIssue.getProjectName());
+        AppConstants.CurrentProjectDetailMap.put("Issue Key :  ", currentIssue.getIssueKey());
+        AppConstants.CurrentProjectDetailMap.put("Issue Title :  ", currentIssue.getIssueTitle());
+        AppConstants.CurrentProjectDetailMap.put("Avatar :  ", String.valueOf(currentIssue.getAvatar()));
+
 
         btnAddWeeks.setOnClickListener(this);
         btnAddHours.setOnClickListener(this);
@@ -144,6 +158,7 @@ public class ProjectEstimatationFragment extends Fragment implements View.OnClic
         btnRemoveMins.setOnClickListener(this);
 
         btnSubmit.setOnClickListener(this);
+        txtMoreDetails.setOnClickListener(this);
     }
 
 //    @Override
@@ -233,6 +248,9 @@ public class ProjectEstimatationFragment extends Fragment implements View.OnClic
 
                     }
                     break;
+                case R.id.txtMoreDetails:
+                loadFragment(new MoreIssuesFragment());
+                    break;
 
             }
         }catch (Exception e) {
@@ -241,7 +259,15 @@ public class ProjectEstimatationFragment extends Fragment implements View.OnClic
 
 
     }
-
+    private void loadFragment(Fragment fragment) {
+        // create a FragmentManager
+        android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
+        // create a FragmentTransaction to begin the transaction and replace the Fragment
+        android.support.v4.app.FragmentTransaction fragmentTransaction = fm.beginTransaction();
+        // replace the FrameLayout with new Fragment
+        fragmentTransaction.replace(R.id.frameLayout, fragment);
+        fragmentTransaction.commit(); // save the changes
+    }
     private String GetEstimatesString(int weekCounter, int dayCounter, int hourCounter, int minsCounter) {
         String sWeek = "-";
         String sDay = "-";
