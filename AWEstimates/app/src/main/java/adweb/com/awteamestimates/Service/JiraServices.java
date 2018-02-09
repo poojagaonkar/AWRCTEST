@@ -2,7 +2,6 @@ package adweb.com.awteamestimates.Service;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -23,19 +22,15 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 
 import adweb.com.awteamestimates.HomeActivity;
-import adweb.com.awteamestimates.LoginActivity;
 import adweb.com.awteamestimates.Models.EstimateModel;
+import adweb.com.awteamestimates.Models.IssuesMoreDetails.MoreDetailModel;
 import adweb.com.awteamestimates.Models.LoginModel;
-import adweb.com.awteamestimates.Models.MoreDetailModel;
 import adweb.com.awteamestimates.Models.ProjectModel;
 import adweb.com.awteamestimates.Models.UserModel;
 import adweb.com.awteamestimates.R;
 import adweb.com.awteamestimates.Utilities.AppConstants;
-import adweb.com.awteamestimates.Utilities.DialogHelper;
 
 /**
  * Created by PoojaGaonkar on 2/6/2018.

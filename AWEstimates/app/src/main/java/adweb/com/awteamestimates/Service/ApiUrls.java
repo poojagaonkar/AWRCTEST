@@ -10,7 +10,7 @@ public  class ApiUrls {
     public  static String LOGIN_URL = "/rest/auth/1/session";
     public  static String USER_DETAIL_URL = "/rest/api/2/user?key=";
     public  static String FETCH_PROJECTS_URL = "/rest/adwebTeamEstimates/2/teamEstimation/currentEstimatedIssues"; //This API gives active project details.
-    public  static  String MORE_DETAILS_URL = "/rest/adwebTeamEstimates/2/teamEstimation/currentTeamEstimations/"; //This API gives result of all the details for each user with their min max and average estimate
+    public  static  String MORE_DETAILS_URL = "/rest/api/2/issue/"; //This API gives result of all the details for each user with their min max and average estimate
 
     //</editor-fold>
 

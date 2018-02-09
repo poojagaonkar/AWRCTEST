@@ -10,13 +10,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.TextView;
 
-import java.util.Map;
+import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
 import adweb.com.awteamestimates.Adapters.MoreDetailsAdapter;
-import adweb.com.awteamestimates.Models.MoreDetailModel;
+import adweb.com.awteamestimates.Models.IssuesMoreDetails.MoreDetailModel;
 import adweb.com.awteamestimates.R;
 import adweb.com.awteamestimates.Service.JiraServices;
 import adweb.com.awteamestimates.Utilities.AppConstants;
@@ -67,6 +66,13 @@ public class MoreIssuesFragment extends Fragment {
 
             if(mModel !=null)
             {
+                AppConstants.CurrentProjectDetailMap= new HashMap<String, String>();
+                AppConstants.CurrentProjectDetailMap.put("Project Name :  ", AppConstants.CurrentEstimatedIssue.getProjectName());
+                AppConstants.CurrentProjectDetailMap.put("Description :  ", mModel.getFields().getIssuetype().getDescription());
+                AppConstants.CurrentProjectDetailMap.put("Issue Type :  ",  mModel.getFields().getIssuetype().getName());
+                AppConstants.CurrentProjectDetailMap.put("Creator :  ",mModel.getFields().getCreator().getDisplayName());
+                AppConstants.CurrentProjectDetailMap.put("Reporter :  ", mModel.getFields().getReporter().getDisplayName());
+                AppConstants.CurrentProjectDetailMap.put("Priority :  ", mModel.getFields().getPriority().getName());
 
             }
         } catch (InterruptedException e) {

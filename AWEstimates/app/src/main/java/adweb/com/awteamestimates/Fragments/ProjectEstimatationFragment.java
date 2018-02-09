@@ -136,12 +136,6 @@ public class ProjectEstimatationFragment extends Fragment implements View.OnClic
         txtProjectName.setText(AppConstants.CurrentSelectedProject);
         mIssueKey = AppConstants.CurrentEstimatedIssue.getIssueKey();
 
-        AppConstants.CurrentProjectDetailMap= new HashMap<String, String>();
-        AppConstants.CurrentProjectDetailMap.put("Project Key :  ", AppConstants.CurrentEstimatedIssue.getIssueKey());
-        AppConstants.CurrentProjectDetailMap.put("Project Name :  ", AppConstants.CurrentEstimatedIssue.getProjectName());
-        AppConstants.CurrentProjectDetailMap.put("Issue Key :  ", AppConstants.CurrentEstimatedIssue.getIssueKey());
-        AppConstants.CurrentProjectDetailMap.put("Issue Title :  ", AppConstants.CurrentEstimatedIssue.getIssueTitle());
-        AppConstants.CurrentProjectDetailMap.put("Avatar :  ", String.valueOf(AppConstants.CurrentEstimatedIssue.getAvatar()));
 
 
         btnAddWeeks.setOnClickListener(this);
