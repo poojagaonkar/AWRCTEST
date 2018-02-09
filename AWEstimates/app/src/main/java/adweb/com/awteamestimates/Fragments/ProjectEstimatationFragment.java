@@ -1,6 +1,7 @@
 package adweb.com.awteamestimates.Fragments;
 
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -21,6 +22,7 @@ import com.google.common.collect.Collections2;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import adweb.com.awteamestimates.IssueDetailsActivity;
 import adweb.com.awteamestimates.Models.CurrentEstimatedIssue;
 import adweb.com.awteamestimates.Models.EstimateModel;
 import adweb.com.awteamestimates.R;
@@ -246,7 +248,8 @@ public class ProjectEstimatationFragment extends Fragment implements View.OnClic
                     }
                     break;
                 case R.id.txtMoreDetails:
-                loadFragment(new MoreIssuesFragment());
+                //loadFragment(new MoreIssuesFragment());
+                    getActivity().startActivity(new Intent(getActivity(), IssueDetailsActivity.class));
                     break;
 
             }
