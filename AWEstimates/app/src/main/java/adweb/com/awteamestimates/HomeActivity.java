@@ -224,18 +224,11 @@ public class HomeActivity extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_refresh) {
 
+            AppConstants.isRefreshed = true;
             GetUserDetails();
 
             Fragment f =this.getSupportFragmentManager().findFragmentById(R.id.frameLayout);
-//            if (f.getClass().equals(SelectProjectFragment.class)) {
-//
-//
-//
-//            }
-//            else if(f.getClass().equals(ProjectEstimatationFragment.class))
-//            {
-//
-//            }
+
 
             final android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.detach(f);

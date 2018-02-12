@@ -21,4 +21,5 @@ public class AppConstants {
     public static HashMap<String, String> CurrentProjectDetailMap;
     public static ArrayList ProjectTitles;
     public static CurrentEstimatedIssue CurrentEstimatedIssue;
+    public static boolean isRefreshed;
 }

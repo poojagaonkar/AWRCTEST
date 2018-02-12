@@ -108,9 +108,11 @@ public class SelectProjectFragment extends Fragment {
         //region Get Project Details
         try {
 
-            if(AppConstants.ProjectTitles == null || AppConstants.ProjectTitles.size() ==0) {
+            if(AppConstants.ProjectTitles == null || AppConstants.ProjectTitles.size() ==0 || AppConstants.isRefreshed ) {
                 JiraServices.GetProjectDetails getProjectDetails = new JiraServices.GetProjectDetails(mUserName, mBaseUrl);
                 ProjectModel mModel = getProjectDetails.execute().get();
+
+                AppConstants.isRefreshed = false;
 
                 if (mModel != null) {
                     AppConstants.FullProjectList = mModel.getCurrentEstimatedIssue();
