@@ -2,6 +2,7 @@ package adweb.com.awteamestimates.Service;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -50,12 +51,16 @@ public class JiraServices {
         private ProgressDialog pd;
         private SharedPreferences mPrefs;
         private SharedPreferences.Editor editor;
+        private ProgressDialog dialog;
+
 
         public UserLoginTask(Activity loginActivity, String userName, String password, String baseUrl) {
             mUserName = userName;
             mPassword = password;
             mBaseUrl = baseUrl;
             mContext = loginActivity;
+            dialog = new ProgressDialog(loginActivity,android.R.style.Theme_DeviceDefault_Light_Dialog_NoActionBar);
+
         }
 
         @Override
@@ -64,8 +69,9 @@ public class JiraServices {
             mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
             editor = mPrefs.edit();
 
-            //DialogHelper.ShowProgressDialog(mContext, false, "");
-
+            dialog.setContentView(R.layout.custom_progress_layout);
+            dialog.setMessage("Logging in..");
+            dialog.show();
         }
 
         @Override
@@ -158,7 +164,9 @@ public class JiraServices {
 //                mPasswordView.requestFocus();
             }
 
-            //DialogHelper.ShowProgressDialog(mContext, true, "");
+            if (dialog.isShowing()) {
+                dialog.dismiss();
+            }
 
         }
 
@@ -175,17 +183,34 @@ public class JiraServices {
 
         private final String mUserName;
         private final String mBaseUrl;
+        private ProgressDialog dialog;
 
-        public  GetUserDetails(String userName, String baseUrl)
+
+        public  GetUserDetails(Context mContext, String userName, String baseUrl)
         {
             mUserName = userName;
             mBaseUrl = baseUrl;
+            dialog = new ProgressDialog(mContext ,android.R.style.Theme_DeviceDefault_Light_Dialog_NoActionBar);
+
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            dialog.setContentView(R.layout.custom_progress_layout);
+            dialog.setMessage("Please wait..");
+            dialog.show();
         }
 
         @Override
         protected void onPostExecute(UserModel mModel) {
             super.onPostExecute(mModel);
 
+            if(dialog.isShowing())
+            {
+                dialog.dismiss();
+            }
 
 
         }
@@ -229,17 +254,31 @@ public class JiraServices {
 
         private final String mUserName;
         private final String mBaseUrl;
+        private final ProgressDialog dialog;
 
-        public  GetProjectDetails(String userName, String baseUrl)
+        public  GetProjectDetails(Context mContext, String userName, String baseUrl)
         {
             mUserName = userName;
             mBaseUrl = baseUrl;
+            dialog = new ProgressDialog(mContext ,android.R.style.Theme_DeviceDefault_Light_Dialog_NoActionBar);
+
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            dialog.setContentView(R.layout.custom_progress_layout);
+            dialog.setMessage("Please wait..");
+            dialog.show();
         }
 
         @Override
         protected void onPostExecute(ProjectModel mModel) {
             super.onPostExecute(mModel);
-
+             if(dialog.isShowing())
+             {
+                 dialog.dismiss();
+             }
 
 
         }
@@ -286,19 +325,25 @@ public class JiraServices {
         private  final  String mBaseUrl;
         private  final String mEstimateString;
         private  final String mIssueKey;
+        private final ProgressDialog dialog;
 
 
-        public SubmitEstimateTask(String userName, String baseUrl, String estimateString, String issueKey) {
+        public SubmitEstimateTask(Context mContext, String userName, String baseUrl, String estimateString, String issueKey) {
             mUserName = userName;
             mBaseUrl = baseUrl;
             mEstimateString = estimateString;
             mIssueKey = issueKey;
+            dialog = new ProgressDialog(mContext ,android.R.style.Theme_DeviceDefault_Light_Dialog_NoActionBar);
+
         }
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
 
+            dialog.setContentView(R.layout.custom_progress_layout);
+            dialog.setMessage("Submitting estimate..");
+            dialog.show();
         }
 
         @Override
@@ -364,6 +409,10 @@ public class JiraServices {
         @Override
         protected void onPostExecute(final EstimateModel mModel) {
 
+            if(dialog.isShowing())
+            {
+                dialog.dismiss();;
+            }
         }
 
         @Override
@@ -379,19 +428,32 @@ public class JiraServices {
         private final String mUserName;
         private final String mBaseUrl;
         private final String mIssueKey;
+        private final ProgressDialog dialog;
 
-        public  GetMoreDetails(String userName, String baseUrl, String issueKey)
+        public  GetMoreDetails(Context mContext, String userName, String baseUrl, String issueKey)
         {
             mUserName = userName;
             mBaseUrl = baseUrl;
             mIssueKey = issueKey;
+            dialog = new ProgressDialog(mContext, android.R.style.Theme_DeviceDefault_Light_Dialog_NoActionBar);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            dialog.setContentView(R.layout.custom_progress_layout);
+            dialog.setMessage("Please wait..");
+            dialog.show();
         }
 
         @Override
         protected void onPostExecute(MoreDetailModel mModel) {
             super.onPostExecute(mModel);
 
-
+            if(dialog.isShowing())
+            {
+                dialog.dismiss();;
+            }
 
         }
 

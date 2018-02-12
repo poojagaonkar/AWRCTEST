@@ -129,7 +129,7 @@ public class HomeActivity extends AppCompatActivity
     {
         //region Get user details
         try {
-            JiraServices. GetUserDetails getUserDetails = new JiraServices.GetUserDetails(mUserName,mBaseUrl);
+            JiraServices. GetUserDetails getUserDetails = new JiraServices.GetUserDetails(this, mUserName,mBaseUrl);
             UserModel mModel = getUserDetails.execute().get();
 
             if(mModel != null ) {
@@ -165,7 +165,7 @@ public class HomeActivity extends AppCompatActivity
     {
         //region Get Project Details
         try {
-            JiraServices. GetProjectDetails getProjectDetails = new JiraServices.GetProjectDetails(mUserName,mBaseUrl);
+            JiraServices. GetProjectDetails getProjectDetails = new JiraServices.GetProjectDetails(this,mUserName,mBaseUrl);
             ProjectModel mModel = getProjectDetails.execute().get();
 
             if(mModel != null ) {

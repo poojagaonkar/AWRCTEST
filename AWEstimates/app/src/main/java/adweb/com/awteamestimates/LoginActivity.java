@@ -204,6 +204,12 @@ public class LoginActivity extends AppCompatActivity  {
            //showProgress(true);
             try {
 
+
+//                runOnUiThread(new Runnable(){
+//                    public void run() {
+//                       DialogHelper.ShowProgressDialog(getApplicationContext(), false, "");
+//                    }
+//                });
                 mAuthTask = null;
                 mAuthTask = new  JiraServices.UserLoginTask(this, userName, password,baseUrl);
 

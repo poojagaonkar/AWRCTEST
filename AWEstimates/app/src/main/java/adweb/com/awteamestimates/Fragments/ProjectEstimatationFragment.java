@@ -227,7 +227,7 @@ public class ProjectEstimatationFragment extends Fragment implements View.OnClic
                     if (!mEstimateString.isEmpty()) {
                         try {
 
-                            JiraServices.SubmitEstimateTask postProjectEstimate = new JiraServices.SubmitEstimateTask(mUserName, mBaseUrl, mEstimateString, mIssueKey);
+                            JiraServices.SubmitEstimateTask postProjectEstimate = new JiraServices.SubmitEstimateTask(getActivity(),mUserName, mBaseUrl, mEstimateString, mIssueKey);
                             EstimateModel mModel = postProjectEstimate.execute().get();
 
                             if (mModel != null && mModel.getSuccess() == 200) {

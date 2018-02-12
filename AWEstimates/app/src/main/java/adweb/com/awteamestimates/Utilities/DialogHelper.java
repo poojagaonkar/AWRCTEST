@@ -20,7 +20,7 @@ public class DialogHelper {
 
     private static Dialog dialog;
 
-    public static void ShowProgressDialog(Activity mActivity, boolean isDismissed, String progressMessage)
+    public static void ShowProgressDialog(Context mActivity, boolean isDismissed, String progressMessage)
     {
 
         try {
