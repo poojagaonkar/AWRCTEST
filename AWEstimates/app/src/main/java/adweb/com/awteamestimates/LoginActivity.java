@@ -26,7 +26,9 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -98,6 +100,9 @@ public class LoginActivity extends AppCompatActivity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE| WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+
         // Set up the login form.
         mUserNameView = (EditText) findViewById(R.id.email);
         mBaseUrlView = (EditText)findViewById(R.id.etBaseUrl);
@@ -106,6 +111,8 @@ public class LoginActivity extends AppCompatActivity  {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
+
+                    HideKeyboard(mPasswordView);
                     attemptLogin();
                     return true;
                 }
@@ -113,10 +120,13 @@ public class LoginActivity extends AppCompatActivity  {
             }
         });
 
+
         Button mUserNameSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mUserNameSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+                HideKeyboard(view);
+
                 attemptLogin();
             }
         });
@@ -137,9 +147,17 @@ public class LoginActivity extends AppCompatActivity  {
         }
 
 
+
+
     }
 
-
+    private void HideKeyboard(View v)
+    {
+        if (v != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+        }
+    }
 
 
 
@@ -201,21 +219,17 @@ public class LoginActivity extends AppCompatActivity  {
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-           //showProgress(true);
+
             try {
 
 
-//                runOnUiThread(new Runnable(){
-//                    public void run() {
-//                       DialogHelper.ShowProgressDialog(getApplicationContext(), false, "");
-//                    }
-//                });
+
                 mAuthTask = null;
                 mAuthTask = new  JiraServices.UserLoginTask(this, userName, password,baseUrl);
 
                 mAuthTask.execute();
 
-               // showProgress(false);
+
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -273,128 +287,5 @@ public class LoginActivity extends AppCompatActivity  {
 
 
 
-
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
-//    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-//
-//        private final String mUserName;
-//        private final String mPassword;
-//        private  final  String mBaseUrl;
-//        SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-//        SharedPreferences.Editor editor = mPrefs.edit();
-//
-//        private   String mUserSessionName ="";
-//        private   String mUserSessionValue ="";
-//
-//        UserLoginTask(String userName, String password, String baseUrl) {
-//            mUserName = userName;
-//            mPassword = password;
-//            mBaseUrl = baseUrl;
-//        }
-//
-//        @Override
-//        protected void onPreExecute() {
-//            super.onPreExecute();
-//
-//        }
-//
-//        @Override
-//        protected Boolean doInBackground(Void... params) {
-//            // TODO: attempt authentication against a network service.
-//
-//            try {
-//
-//                String credentials = "{\"username\":\""+mUserName+"\",\"password\":\""+mPassword+"\"}";
-//
-//               // String credentials = "{\"username\":\"admin\",\"password\":\"admin\"}";
-//
-//                URL url = new URL(mBaseUrl + ApiUrls.LOGIN_URL );
-//                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-//                conn.setDoOutput(true);
-//                conn.setRequestMethod("POST");
-//                conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-//
-//
-//                OutputStream os = conn.getOutputStream();
-//                os.write(credentials.getBytes());
-//                os.close();
-//
-//                if (conn.getResponseCode() != HttpURLConnection.HTTP_OK)
-//                {
-//                    throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
-//                }
-//
-//                BufferedReader br = new BufferedReader(new InputStreamReader(
-//                        (conn.getInputStream())));
-//
-//                String output;
-//
-//                while ((output = br.readLine()) != null) {
-//
-//                    System.out.println("Output from Server .... \n" + output);
-//                    final ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, false);;
-//                    try {
-//
-//                        LoginModel mModel = mapper.readValue(output, LoginModel.class);
-//                         mUserSessionName = mModel.getSession().getName() ;
-//                         mUserSessionValue = mModel.getSession().getValue();
-//
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//
-//
-//
-//                conn.disconnect();
-//
-//            } catch (MalformedURLException e) {
-//                e.printStackTrace();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//            catch (Exception ex)
-//            {
-//                ex.printStackTrace();
-//            }
-//
-//            // TODO: register the new account here.
-//            return true;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(final Boolean success) {
-//            mAuthTask = null;
-//            showProgress(false);
-//
-//            if (success) {
-//
-//                //On successful login, save the variables for next use.
-//               editor.putString(getResources().getString(R.string.pref_sessionUserName), mUserSessionName);
-//                editor.putString(getResources().getString(R.string.pref_sessionUserValue), mUserSessionValue);
-//                editor.putString(getResources().getString(R.string.pref_baseUrl), mBaseUrl);
-//                editor.putString(getResources().getString(R.string.pref_userName), mUserName);
-//                AppConstants.tempPass = mPassword;
-//                editor.commit();
-//
-//                //Start next activity
-//                Intent mIntent = new Intent(getApplicationContext(), HomeActivity.class);
-//                startActivity(mIntent);
-//                finish();
-//            } else {
-//                mPasswordView.setError(getString(R.string.error_incorrect_password));
-//                mPasswordView.requestFocus();
-//            }
-//        }
-//
-//        @Override
-//        protected void onCancelled() {
-//            mAuthTask = null;
-//            showProgress(false);
-//        }
-//    }
 }
 

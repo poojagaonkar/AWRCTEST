@@ -18,17 +18,15 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name=".LoginActivity"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ProjectEstimateActivity"
-            android:label="@string/title_activity_project_estimate"
-            android:theme="@style/AppTheme" />
+
         <activity
             android:name=".IssueDetailsActivity"
             android:label="@string/title_activity_issue_details"

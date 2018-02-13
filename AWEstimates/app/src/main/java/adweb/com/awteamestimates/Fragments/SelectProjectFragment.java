@@ -20,6 +20,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -65,6 +66,8 @@ public class SelectProjectFragment extends Fragment {
     private  String mBaseUrl;
     private boolean isMenuVisible;
     private Button btnProjectNext;
+    private Spinner mRoleSpinner;
+    private LinearLayout layoutRole;
 
     public SelectProjectFragment() {
         // Required empty public constructor
@@ -113,6 +116,8 @@ public class SelectProjectFragment extends Fragment {
 
         txtTemp = (TextView)view.findViewById(R.id.txtSelect);
         mProjectSpinner = (Spinner)view.findViewById(R.id.spinProjectName);
+        mRoleSpinner = (Spinner)view.findViewById(R.id.spinRoleName);
+        layoutRole = (LinearLayout)view.findViewById(R.id.layoutRole);
 
         mBaseUrl = mPrefs.getString(getResources().getString(R.string.pref_baseUrl), null);
         mUserName = mPrefs.getString(getResources().getString(R.string.pref_userName), null);

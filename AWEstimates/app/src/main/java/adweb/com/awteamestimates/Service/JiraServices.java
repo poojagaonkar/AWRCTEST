@@ -1,8 +1,10 @@
 package adweb.com.awteamestimates.Service;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -25,6 +27,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import adweb.com.awteamestimates.HomeActivity;
+import adweb.com.awteamestimates.LoginActivity;
 import adweb.com.awteamestimates.Models.EstimateModel;
 import adweb.com.awteamestimates.Models.IssuesMoreDetails.MoreDetailModel;
 import adweb.com.awteamestimates.Models.LoginModel;
@@ -52,6 +55,8 @@ public class JiraServices {
         private SharedPreferences mPrefs;
         private SharedPreferences.Editor editor;
         private ProgressDialog dialog;
+        private AlertDialog.Builder mAlert;
+        private Exception mError;
 
 
         public UserLoginTask(Activity loginActivity, String userName, String password, String baseUrl) {
@@ -60,6 +65,7 @@ public class JiraServices {
             mBaseUrl = baseUrl;
             mContext = loginActivity;
             dialog = new ProgressDialog(loginActivity,android.R.style.Theme_DeviceDefault_Light_Dialog_NoActionBar);
+            mAlert= new AlertDialog.Builder(loginActivity, R.style.CustomDialog);
 
         }
 
@@ -72,6 +78,9 @@ public class JiraServices {
             dialog.setContentView(R.layout.custom_progress_layout);
             dialog.setMessage("Logging in..");
             dialog.show();
+
+
+
         }
 
         @Override
@@ -132,6 +141,8 @@ public class JiraServices {
             catch (Exception ex)
             {
                 ex.printStackTrace();
+                mError = ex;
+                return null;
             }
 
             // TODO: register the new account here.
@@ -160,8 +171,12 @@ public class JiraServices {
                 mContext.startActivity(mIntent);
                 mContext.finish();
             } else {
-//                mPasswordView.setError(getString(R.string.login_failed));
-//                mPasswordView.requestFocus();
+
+                mAlert.setTitle("Login Failed");
+                mAlert.setMessage(mError.getMessage());
+                mAlert.setPositiveButton("OK", null);
+                mAlert.create().show();
+
             }
 
             if (dialog.isShowing()) {
