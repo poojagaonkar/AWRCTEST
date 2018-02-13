@@ -6,12 +6,19 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -21,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import adweb.com.awteamestimates.HomeActivity;
 import adweb.com.awteamestimates.Models.CurrentEstimatedIssue;
 import adweb.com.awteamestimates.Models.ProjectModel;
 import adweb.com.awteamestimates.R;
@@ -55,6 +63,8 @@ public class SelectProjectFragment extends Fragment {
     private  String mSessionUserName;
     private  String mSessionUserValue;
     private  String mBaseUrl;
+    private boolean isMenuVisible;
+    private Button btnProjectNext;
 
     public SelectProjectFragment() {
         // Required empty public constructor
@@ -84,6 +94,9 @@ public class SelectProjectFragment extends Fragment {
 
         mPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         mEdit = mPrefs.edit();
+        setHasOptionsMenu(true);
+        //setRetainInstance(false);
+
     }
 
     @Override
@@ -100,10 +113,14 @@ public class SelectProjectFragment extends Fragment {
 
         txtTemp = (TextView)view.findViewById(R.id.txtSelect);
         mProjectSpinner = (Spinner)view.findViewById(R.id.spinProjectName);
-        btnNext =(ImageButton)view.findViewById(R.id.btnNext);
 
         mBaseUrl = mPrefs.getString(getResources().getString(R.string.pref_baseUrl), null);
         mUserName = mPrefs.getString(getResources().getString(R.string.pref_userName), null);
+
+        Toolbar mtoolbar = ((HomeActivity)getActivity()).toolbar;
+        btnProjectNext = (Button) mtoolbar.findViewById(R.id.btnProjectNext);
+
+
 
         //region Get Project Details
         try {
@@ -152,7 +169,7 @@ public class SelectProjectFragment extends Fragment {
                     }
                 });
 
-                btnNext.setOnClickListener(new View.OnClickListener() {
+                btnProjectNext.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
 
@@ -177,6 +194,19 @@ public class SelectProjectFragment extends Fragment {
 
 
     }
+
+
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
+        MenuItem menuItem = menu.findItem(R.id.action_refresh);
+        menuItem.setVisible(false);
+
+
+    }
+
     private void loadFragment(Fragment fragment) {
         // create a FragmentManager
         android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
@@ -185,6 +215,18 @@ public class SelectProjectFragment extends Fragment {
         // replace the FrameLayout with new Fragment
         fragmentTransaction.replace(R.id.frameLayout, fragment);
         fragmentTransaction.commit(); // save the changes
+    }
+
+    @Override
+    public void setMenuVisibility(boolean menuVisible) {
+        try {
+            super.setMenuVisibility(menuVisible);
+            if (menuVisible) {
+                isMenuVisible  = menuVisible;
+            }
+        } catch (Exception e) {
+
+        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event

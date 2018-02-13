@@ -25,6 +25,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -83,21 +84,26 @@ public class HomeActivity extends AppCompatActivity
     private Spinner mProjectSpinner;
     private ImageButton btnNext;
     private TextView txtToolBarTitle;
+    private Button btnProjectNext;
+    public Toolbar toolbar;
+    public NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
 
         txtUserName= (TextView)navigationView.getHeaderView(0).findViewById(R.id.txtUserName);
         txtUserEmail= (TextView)navigationView.getHeaderView(0).findViewById(R.id.txtUserEmail);
         txtToolBarTitle = (TextView)toolbar.findViewById(R.id.txtToolbarTitle);
+        btnProjectNext = findViewById(R.id.btnProjectNext);
 
 
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -275,6 +281,8 @@ public class HomeActivity extends AppCompatActivity
         }
 
         if(mFragment != null) {
+
+
             loadFragment(mFragment);
         }
 
