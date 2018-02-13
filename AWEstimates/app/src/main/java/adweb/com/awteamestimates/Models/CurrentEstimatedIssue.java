@@ -2,6 +2,7 @@
 package adweb.com.awteamestimates.Models;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
@@ -16,7 +17,8 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
     "projectName",
     "issueKey",
     "issueTitle",
-    "avatar"
+    "avatar",
+    "teamEstimationsRolesData"
 })
 public class CurrentEstimatedIssue {
 
@@ -30,6 +32,8 @@ public class CurrentEstimatedIssue {
     private String issueTitle;
     @JsonProperty("avatar")
     private Integer avatar;
+    @JsonProperty("teamEstimationsRolesData")
+    private List<TeamEstimationsRolesDatum> teamEstimationsRolesData = null;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
@@ -81,6 +85,16 @@ public class CurrentEstimatedIssue {
     @JsonProperty("avatar")
     public void setAvatar(Integer avatar) {
         this.avatar = avatar;
+    }
+
+    @JsonProperty("teamEstimationsRolesData")
+    public List<TeamEstimationsRolesDatum> getTeamEstimationsRolesData() {
+        return teamEstimationsRolesData;
+    }
+
+    @JsonProperty("teamEstimationsRolesData")
+    public void setTeamEstimationsRolesData(List<TeamEstimationsRolesDatum> teamEstimationsRolesData) {
+        this.teamEstimationsRolesData = teamEstimationsRolesData;
     }
 
     @JsonAnyGetter

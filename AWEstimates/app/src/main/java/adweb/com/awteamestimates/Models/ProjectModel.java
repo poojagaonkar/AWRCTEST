@@ -13,12 +13,15 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "currentEstimatedIssue"
+    "currentEstimatedIssue",
+    "isEstimationsInstalled"
 })
 public class ProjectModel {
 
     @JsonProperty("currentEstimatedIssue")
     private List<CurrentEstimatedIssue> currentEstimatedIssue = null;
+    @JsonProperty("isEstimationsInstalled")
+    private Boolean isEstimationsInstalled;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
@@ -30,6 +33,16 @@ public class ProjectModel {
     @JsonProperty("currentEstimatedIssue")
     public void setCurrentEstimatedIssue(List<CurrentEstimatedIssue> currentEstimatedIssue) {
         this.currentEstimatedIssue = currentEstimatedIssue;
+    }
+
+    @JsonProperty("isEstimationsInstalled")
+    public Boolean getIsEstimationsInstalled() {
+        return isEstimationsInstalled;
+    }
+
+    @JsonProperty("isEstimationsInstalled")
+    public void setIsEstimationsInstalled(Boolean isEstimationsInstalled) {
+        this.isEstimationsInstalled = isEstimationsInstalled;
     }
 
     @JsonAnyGetter

@@ -256,6 +256,7 @@ public class HomeActivity extends AppCompatActivity
 
             mFragment = new SelectProjectFragment();
             txtToolBarTitle.setText("ESTIMATION");
+            AppConstants.isRefreshed = true;
             // Handle the camera action
         } else if (id == R.id.nav_logout) {
 

@@ -7,24 +7,32 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.common.collect.Collections2;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.concurrent.ExecutionException;
 
+import adweb.com.awteamestimates.HomeActivity;
 import adweb.com.awteamestimates.IssueDetailsActivity;
 import adweb.com.awteamestimates.Models.CurrentEstimatedIssue;
 import adweb.com.awteamestimates.Models.EstimateModel;
+import adweb.com.awteamestimates.Models.ProjectModel;
 import adweb.com.awteamestimates.R;
 import adweb.com.awteamestimates.Service.JiraServices;
 import adweb.com.awteamestimates.Utilities.AppConstants;
@@ -99,6 +107,9 @@ public class ProjectEstimatationFragment extends Fragment implements View.OnClic
         txtIssueTitle = view.findViewById(R.id.txtIssueTitle);
         txtMoreDetails = view.findViewById(R.id.txtMoreDetails);
 
+        Toolbar mToolbar = ((HomeActivity)getActivity()).toolbar;
+        mToolbar.findViewById(R.id.btnProjectNext).setVisibility(View.INVISIBLE);
+
 
         mPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         mEdit = mPrefs.edit();
@@ -132,6 +143,10 @@ public class ProjectEstimatationFragment extends Fragment implements View.OnClic
             }
         });
 
+        if(AppConstants.isRefreshed)
+        {
+            ReloadProjectData();
+        }
         AppConstants.CurrentIssueDetails = Collections2.filter(AppConstants.FullProjectList, user -> user.getProjectName().equals(AppConstants.CurrentSelectedProject)).iterator();
         AppConstants.CurrentEstimatedIssue  = AppConstants.CurrentIssueDetails.next();
         txtIssueTitle.setText(AppConstants.CurrentEstimatedIssue.getIssueTitle());
@@ -152,6 +167,54 @@ public class ProjectEstimatationFragment extends Fragment implements View.OnClic
 
         btnSubmit.setOnClickListener(this);
         txtMoreDetails.setOnClickListener(this);
+    }
+
+    private void ReloadProjectData() {
+
+        //region Get Project Details
+        try {
+
+            if(AppConstants.ProjectTitles == null || AppConstants.ProjectTitles.size() ==0 || AppConstants.isRefreshed ) {
+                JiraServices.GetProjectDetails getProjectDetails = new JiraServices.GetProjectDetails(getActivity(), mUserName, mBaseUrl);
+                ProjectModel mModel = getProjectDetails.execute().get();
+
+                AppConstants.isRefreshed = false;
+
+                if (mModel != null) {
+
+
+                    AppConstants.FullProjectList = mModel.getCurrentEstimatedIssue();
+                    AppConstants.ProjectTitles = new ArrayList<>();
+
+
+
+                    for (CurrentEstimatedIssue mIssue : AppConstants.FullProjectList) {
+
+                        AppConstants.ProjectTitles.add(mIssue.getProjectName());
+                        System.out.println(mIssue.getIssueKey() + "\n" + mIssue.getIssueTitle() + "\n" + mIssue.getProjectKey() + "\n" + mIssue.getProjectName());
+
+                    }
+                }
+                else
+                {
+                    throw new RuntimeException("Could not fetch project details.");
+                }
+            }
+
+
+
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        catch (Exception ex)
+        {
+            Toast.makeText(getActivity(), ex.getMessage(), Toast.LENGTH_LONG).show();
+        }
+        //endregion
+
     }
 
 //    @Override
@@ -232,8 +295,13 @@ public class ProjectEstimatationFragment extends Fragment implements View.OnClic
 
                             if (mModel != null && mModel.getSuccess() == 200) {
 
-                                DialogHelper.ShowAlert(getActivity(), "", "Estimate submitted successfully");
-
+                                DialogHelper.ShowAlert(getActivity(), "Success", "Estimate submitted successfully");
+                                etWeeks.setText("");
+                                etDays.setText("");
+                                etHours.setText("");
+                                etMins.setText("");
+                                tableFooterLayout.setVisibility(View.INVISIBLE);
+                                btnSubmit.setText("Update Estimation");
                             }
                             else {
 

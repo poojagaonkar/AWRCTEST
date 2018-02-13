@@ -125,6 +125,7 @@ public class SelectProjectFragment extends Fragment {
         Toolbar mtoolbar = ((HomeActivity)getActivity()).toolbar;
         btnProjectNext = (Button) mtoolbar.findViewById(R.id.btnProjectNext);
 
+        btnProjectNext.setVisibility(View.VISIBLE);
 
 
         //region Get Project Details
@@ -137,8 +138,15 @@ public class SelectProjectFragment extends Fragment {
                 AppConstants.isRefreshed = false;
 
                 if (mModel != null) {
+
+
                     AppConstants.FullProjectList = mModel.getCurrentEstimatedIssue();
                     AppConstants.ProjectTitles = new ArrayList<>();
+
+                    if(mModel.getIsEstimationsInstalled())
+                    {
+                        layoutRole.setVisibility(View.VISIBLE);
+                    }
 
                     for (CurrentEstimatedIssue mIssue : AppConstants.FullProjectList) {
 

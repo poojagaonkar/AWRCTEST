@@ -22,7 +22,7 @@
             >
 
             <RelativeLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
 
@@ -32,8 +32,9 @@
                 android:text="Estimates"
                 android:textStyle="bold"
                 android:textSize="18sp"
-                android:layout_centerInParent="true"
-                android:id="@+id/txtToolbarTitle"/>
+                android:id="@+id/txtToolbarTitle"
+                android:layout_centerVertical="true"
+                android:textColor="@android:color/white"/>
 
             <Button
                 android:layout_width="wrap_content"
