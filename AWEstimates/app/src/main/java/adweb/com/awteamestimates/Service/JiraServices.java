@@ -29,6 +29,7 @@ import java.net.URL;
 import adweb.com.awteamestimates.HomeActivity;
 import adweb.com.awteamestimates.LoginActivity;
 import adweb.com.awteamestimates.Models.EstimateModel;
+import adweb.com.awteamestimates.Models.GetRoles.RoleModel;
 import adweb.com.awteamestimates.Models.IssuesMoreDetails.MoreDetailModel;
 import adweb.com.awteamestimates.Models.LoginModel;
 import adweb.com.awteamestimates.Models.ProjectModel;
@@ -302,7 +303,7 @@ public class JiraServices {
         protected ProjectModel doInBackground(String... strings) {
             String auth = new String(Base64.encode(mUserName+":"+ AppConstants.tempPass));
             try {
-                String projects = invokeGetMethod(auth,mBaseUrl + ApiUrls.FETCH_PROJECTS_URL);
+                 String projects = invokeGetMethod(auth,mBaseUrl + ApiUrls.FETCH_PROJECTS_URL);
                 System.out.println(projects);
 
 
@@ -332,6 +333,76 @@ public class JiraServices {
     }
     //</editor-fold>
 
+
+    //<editor-fold desc="GET ==> Get Roles">
+    public static class GetRoleDetails extends AsyncTask <String, Void, RoleModel> {
+
+        private final String mUserName;
+        private final String mBaseUrl;
+        private final ProgressDialog dialog;
+        private final String mIssueKey;
+
+        public  GetRoleDetails(Context mContext, String userName, String baseUrl, String issueKey)
+        {
+            mUserName = userName;
+            mBaseUrl = baseUrl;
+            dialog = new ProgressDialog(mContext ,android.R.style.Theme_DeviceDefault_Light_Dialog_NoActionBar);
+            mIssueKey = issueKey;
+
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            dialog.setContentView(R.layout.custom_progress_layout);
+            dialog.setMessage("Please wait..");
+            dialog.show();
+        }
+
+        @Override
+        protected void onPostExecute(RoleModel mModel) {
+            super.onPostExecute(mModel);
+            if(dialog.isShowing())
+            {
+                dialog.dismiss();
+            }
+
+
+        }
+
+        @Override
+        protected RoleModel doInBackground(String... strings) {
+            String auth = new String(Base64.encode(mUserName+":"+ AppConstants.tempPass));
+            try {
+                String projects = invokeGetMethod(auth,mBaseUrl + ApiUrls.FETCH_ROLE_BASED_PROJECT_URL + mIssueKey +"/"+ mUserName);
+                System.out.println(projects);
+
+
+
+                final ObjectMapper mapper = new ObjectMapper();//.configure(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT, false);;
+                RoleModel mModel = mapper.readValue(projects, RoleModel.class);
+                return  mModel;
+
+            } catch (Exception e) {
+                System.out.println("Username or Password wrong!");
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        private  String invokeGetMethod(String auth, String url) throws Exception, ClientHandlerException {
+            Client client = Client.create();
+            WebResource webResource = client.resource(url);
+            ClientResponse response = webResource.header("Authorization", "Basic " + auth).type("application/json")
+                    .accept("application/json").get(ClientResponse.class);
+            int statusCode = response.getStatus();
+            if (statusCode == 401) {
+                throw new Exception("Invalid Username or Password");
+            }
+            return response.getEntity(String.class);
+        }
+    }
+    //</editor-fold>
 
     //<editor-fold desc="POST ==> Submit Estimate">
     public static class SubmitEstimateTask extends AsyncTask<Void, Void, EstimateModel>  {

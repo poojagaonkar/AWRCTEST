@@ -25,12 +25,19 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.common.collect.Collections2;
+
+import java.io.Console;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import adweb.com.awteamestimates.HomeActivity;
 import adweb.com.awteamestimates.Models.CurrentEstimatedIssue;
+import adweb.com.awteamestimates.Models.GetRoles.RoleModel;
+import adweb.com.awteamestimates.Models.GetRoles.Roles;
 import adweb.com.awteamestimates.Models.ProjectModel;
 import adweb.com.awteamestimates.R;
 import adweb.com.awteamestimates.Service.JiraServices;
@@ -128,6 +135,7 @@ public class SelectProjectFragment extends Fragment {
         btnProjectNext.setVisibility(View.VISIBLE);
 
 
+
         //region Get Project Details
         try {
 
@@ -137,22 +145,32 @@ public class SelectProjectFragment extends Fragment {
 
                 AppConstants.isRefreshed = false;
 
+
+
                 if (mModel != null) {
 
 
                     AppConstants.FullProjectList = mModel.getCurrentEstimatedIssue();
                     AppConstants.ProjectTitles = new ArrayList<>();
 
-                    if(mModel.getIsEstimationsInstalled())
-                    {
-                        layoutRole.setVisibility(View.VISIBLE);
-                    }
-
                     for (CurrentEstimatedIssue mIssue : AppConstants.FullProjectList) {
 
                         AppConstants.ProjectTitles.add(mIssue.getProjectName());
                         System.out.println(mIssue.getIssueKey() + "\n" + mIssue.getIssueTitle() + "\n" + mIssue.getProjectKey() + "\n" + mIssue.getProjectName());
 
+                    }
+                    if(mModel.getIsEstimationsInstalled() !=null && mModel.getIsEstimationsInstalled())
+                    {
+                        layoutRole.setVisibility(View.VISIBLE);
+
+//                        try {
+//                            JiraServices.GetRoleDetails getRoleDetails = new JiraServices.GetRoleDetails(getActivity(), mUserName, mBaseUrl, "RCDEM-1");
+//                            RoleModel pModel = getRoleDetails.execute().get();
+//                        } catch (InterruptedException e) {
+//                            e.printStackTrace();
+//                        } catch (ExecutionException e) {
+//                            e.printStackTrace();
+//                        }
                     }
                 }
                 else
@@ -172,6 +190,46 @@ public class SelectProjectFragment extends Fragment {
                     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
                         AppConstants.CurrentSelectedProject =adapter.getItem(i);
+                        AppConstants.CurrentIssueDetails = Collections2.filter(AppConstants.FullProjectList, user -> user.getProjectName().equals(AppConstants.CurrentSelectedProject)).iterator();
+                        AppConstants.CurrentEstimatedIssue  = AppConstants.CurrentIssueDetails.next();
+
+                        try {
+                            JiraServices.GetRoleDetails getRoleDetails = new JiraServices.GetRoleDetails(getActivity(), mUserName, mBaseUrl, AppConstants.CurrentEstimatedIssue.getIssueKey());
+                             RoleModel mModel = getRoleDetails.execute().get();
+
+                             if(mModel !=null)
+                             {
+
+                                AppConstants.ProjectRoleTitles =new ArrayList<String>(mModel.getRoles().values());
+                                AppConstants.ProjectRoleMap = mModel.getRoles();
+
+                                 final ArrayAdapter<CharSequence> adapter = new ArrayAdapter(getActivity(),android.R.layout.simple_spinner_item, AppConstants.ProjectRoleTitles);
+                                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                 mRoleSpinner.setAdapter(adapter);
+
+                                 mRoleSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+
+                                     @Override
+                                     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+                                         AppConstants.CurrentSelectedRole = adapter.getItem(i);
+                                     }
+
+                                     @Override
+                                     public void onNothingSelected(AdapterView<?> adapterView) {
+
+                                     }
+                                 });
+
+                             }
+
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        } catch (ExecutionException e) {
+                            e.printStackTrace();
+                        }
+
 
                     }
 
@@ -201,14 +259,27 @@ public class SelectProjectFragment extends Fragment {
         }
         catch (Exception ex)
         {
-            Toast.makeText(getActivity(), ex.getMessage(), Toast.LENGTH_LONG).show();
+            ex.printStackTrace();
         }
         //endregion
 
 
     }
 
-
+    Object[] convertToObjectArray(Object array) {
+        Class ofArray = array.getClass().getComponentType();
+        if (ofArray.isPrimitive()) {
+            List ar = new ArrayList();
+            int length = Array.getLength(array);
+            for (int i = 0; i < length; i++) {
+                ar.add(Array.get(array, i));
+            }
+            return ar.toArray();
+        }
+        else {
+            return (Object[]) array;
+        }
+    }
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {

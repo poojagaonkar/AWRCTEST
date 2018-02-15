@@ -1,6 +1,7 @@
 package adweb.com.awteamestimates.Utilities;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -22,4 +23,7 @@ public class AppConstants {
     public static ArrayList ProjectTitles;
     public static CurrentEstimatedIssue CurrentEstimatedIssue;
     public static boolean isRefreshed;
+    public static ArrayList<String> ProjectRoleTitles;
+    public static HashMap<Integer, String> ProjectRoleMap;
+    public static CharSequence CurrentSelectedRole;
 }

@@ -147,8 +147,7 @@ public class ProjectEstimatationFragment extends Fragment implements View.OnClic
         {
             ReloadProjectData();
         }
-        AppConstants.CurrentIssueDetails = Collections2.filter(AppConstants.FullProjectList, user -> user.getProjectName().equals(AppConstants.CurrentSelectedProject)).iterator();
-        AppConstants.CurrentEstimatedIssue  = AppConstants.CurrentIssueDetails.next();
+
         txtIssueTitle.setText(AppConstants.CurrentEstimatedIssue.getIssueTitle());
         txtProjectName.setText(AppConstants.CurrentSelectedProject);
         mIssueKey = AppConstants.CurrentEstimatedIssue.getIssueKey();
