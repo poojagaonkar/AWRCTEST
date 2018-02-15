@@ -29,7 +29,7 @@ public class RoleModel {
     @JsonProperty("issueName")
     private String issueName;
     @JsonProperty("roles")
-    private HashMap<Integer ,String> roles;
+    private HashMap<String ,String> roles;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
@@ -74,12 +74,12 @@ public class RoleModel {
     }
 
     @JsonProperty("roles")
-    public HashMap<Integer ,String> getRoles() {
+    public HashMap<String ,String> getRoles() {
         return roles;
     }
 
     @JsonProperty("roles")
-    public void setRoles(HashMap<Integer ,String> roles) {
+    public void setRoles(HashMap<String ,String> roles) {
         this.roles = roles;
     }
 

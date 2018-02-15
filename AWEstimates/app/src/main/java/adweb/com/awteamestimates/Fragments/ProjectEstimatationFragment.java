@@ -1,6 +1,7 @@
 package adweb.com.awteamestimates.Fragments;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -25,6 +27,7 @@ import android.widget.Toast;
 import com.google.common.collect.Collections2;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.concurrent.ExecutionException;
@@ -33,6 +36,7 @@ import adweb.com.awteamestimates.HomeActivity;
 import adweb.com.awteamestimates.IssueDetailsActivity;
 import adweb.com.awteamestimates.Models.CurrentEstimatedIssue;
 import adweb.com.awteamestimates.Models.EstimateModel;
+import adweb.com.awteamestimates.Models.GetRoles.RoleIdModel;
 import adweb.com.awteamestimates.Models.ProjectModel;
 import adweb.com.awteamestimates.R;
 import adweb.com.awteamestimates.Service.JiraServices;
@@ -68,6 +72,11 @@ public class ProjectEstimatationFragment extends Fragment implements View.OnClic
     private TextView txtMoreDetails;
     private TextView txtIssueEstimate;
     private TextView txtRoleTitle;
+    private EstimateModel estimateModel;
+    private JiraServices.SubmitEstimateTask postProjectEstimate;
+    private String mEstimateString = "N/A";
+    private Collection<RoleIdModel> mRoleIdCollection;
+    private RoleIdModel mCurrentRole;
 
     public ProjectEstimatationFragment() {
         // Required empty public constructor
@@ -156,10 +165,12 @@ public class ProjectEstimatationFragment extends Fragment implements View.OnClic
         txtIssueTitle.setText(AppConstants.CurrentEstimatedIssue.getIssueTitle());
         txtProjectName.setText(AppConstants.CurrentSelectedProject);
         mIssueKey = AppConstants.CurrentEstimatedIssue.getIssueKey();
+        mRoleIdCollection = Collections2.filter(AppConstants.ProjectRoleList, val -> val.getRoleName().equals(AppConstants.CurrentSelectedRole));
+        mCurrentRole = mRoleIdCollection.iterator().next();
 
         CharSequence roleTitle = AppConstants.CurrentSelectedRole !=null ? AppConstants.CurrentSelectedRole :  "Administrator";
         txtRoleTitle.setText(roleTitle);
-        //txtIssueEstimate.setText();
+        txtIssueEstimate.setText(mEstimateString);
 
 
         btnAddWeeks.setOnClickListener(this);
@@ -286,15 +297,25 @@ public class ProjectEstimatationFragment extends Fragment implements View.OnClic
 
                 case R.id.btnSubmit:
 
-                    String mEstimateString = GetEstimatesString(weekCounter, dayCounter, hourCounter, minsCounter);
+                    mEstimateString = GetEstimatesString(weekCounter, dayCounter, hourCounter, minsCounter);
 
                     if (!mEstimateString.isEmpty()) {
                         try {
 
-                            JiraServices.SubmitEstimateTask postProjectEstimate = new JiraServices.SubmitEstimateTask(getActivity(),mUserName, mBaseUrl, mEstimateString, mIssueKey);
-                            EstimateModel mModel = postProjectEstimate.execute().get();
+                            if(!AppConstants.isRoleEnabled) {
 
-                            if (mModel != null && mModel.getSuccess() == 200) {
+                                 postProjectEstimate = new JiraServices.SubmitEstimateTask(getActivity(), mUserName, mBaseUrl, mEstimateString, mIssueKey);
+                            }
+                            else
+                            {
+                                postProjectEstimate = new JiraServices.SubmitEstimateTask(getActivity(), mUserName, mBaseUrl, mEstimateString, mIssueKey , mCurrentRole.getRoleID(), mCurrentRole.getRoleName());
+
+                            }
+
+
+                            estimateModel = postProjectEstimate.execute().get();
+
+                            if (estimateModel != null && estimateModel.getSuccess() == 200) {
 
                                 DialogHelper.ShowAlert(getActivity(), "Success", "Estimate submitted successfully");
                                 etWeeks.setText("");
@@ -302,7 +323,10 @@ public class ProjectEstimatationFragment extends Fragment implements View.OnClic
                                 etHours.setText("");
                                 etMins.setText("");
                                 tableFooterLayout.setVisibility(View.INVISIBLE);
-                                btnSubmit.setText("Update Estimation");
+                                btnExpandExtimates.setText("Update Estimation");
+                                txtIssueEstimate.setText(mEstimateString);
+                                InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
                             }
                             else {
 
@@ -349,14 +373,26 @@ public class ProjectEstimatationFragment extends Fragment implements View.OnClic
             if (weekCounter > 0) {
                 sWeek = String.valueOf(weekCounter) + "w" + " ";
             }
+            else if(!etWeeks.getText().toString().isEmpty()){
+                 sWeek = etWeeks.getText()+ "w" + " ";
+            }
             if (dayCounter > 0) {
                 sDay = String.valueOf(dayCounter) + "d" + " ";
+            }
+            else if(!etDays.getText().toString().isEmpty()){
+                sDay = etDays.getText()+ "d" + " ";
             }
             if (hourCounter > 0) {
                 sHour = String.valueOf(hourCounter) + "h" + " ";
             }
+            else if(!etHours.getText().toString().isEmpty()){
+                sHour = etHours.getText()+ "h" + " ";
+            }
             if (minsCounter > 0) {
                 sMins = String.valueOf(minsCounter) + "m" + " ";
+            }
+            else if(!etMins.getText().toString().isEmpty()){
+                sMins = etMins.getText()+ "m" + " ";
             }
 
             estimateString = sWeek + sDay + sHour + sMins;

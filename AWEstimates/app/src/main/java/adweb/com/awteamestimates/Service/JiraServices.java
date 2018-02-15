@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentActivity;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -411,17 +412,33 @@ public class JiraServices {
         private  final  String mBaseUrl;
         private  final String mEstimateString;
         private  final String mIssueKey;
-        private final ProgressDialog dialog;
+        private  ProgressDialog dialog = null;
+        private  String roleId;
+        private  String roleName ;
+        private String minput;
 
 
         public SubmitEstimateTask(Context mContext, String userName, String baseUrl, String estimateString, String issueKey) {
-            mUserName = userName;
-            mBaseUrl = baseUrl;
-            mEstimateString = estimateString;
-            mIssueKey = issueKey;
-            dialog = new ProgressDialog(mContext ,android.R.style.Theme_DeviceDefault_Light_Dialog_NoActionBar);
+            this.mUserName = userName;
+            this.mBaseUrl = baseUrl;
+            this.mEstimateString = estimateString;
+            this.mIssueKey = issueKey;
+            this.dialog = new ProgressDialog(mContext ,android.R.style.Theme_DeviceDefault_Light_Dialog_NoActionBar);
 
         }
+
+        public SubmitEstimateTask(FragmentActivity activity, String mUserName, String mBaseUrl, String mEstimateString, String mIssueKey, String roleID, String roleName) {
+
+            this.mUserName = mUserName;
+            this.mBaseUrl = mBaseUrl;
+            this.mEstimateString = mEstimateString;
+            this.mIssueKey = mIssueKey;
+            this.roleId = roleID;
+            this.roleName = roleName;
+            this.dialog = new ProgressDialog(activity ,android.R.style.Theme_DeviceDefault_Light_Dialog_NoActionBar);
+
+        }
+
 
         @Override
         protected void onPreExecute() {
@@ -472,14 +489,17 @@ public class JiraServices {
 
         private String invokePostMethod(String auth, String url)  throws Exception, ClientHandlerException {
 
-            String input = "{\"userName\":\""+mUserName+"\",\"issueKey\":\""+mIssueKey+"\",\"teamEstimate\":\""+mEstimateString+"\"}";
-
+            if(!AppConstants.isRoleEnabled) {
+                minput = "{\"userName\":\"" + mUserName + "\",\"issueKey\":\"" + mIssueKey + "\",\"teamEstimate\":\"" + mEstimateString + "\"}";
+            }
+            else
+                minput = "{\"userName\":\"" + mUserName + "\",\"issueKey\":\"" + mIssueKey + "\",\"roleId\":\"" + roleId + "\",\"roleName\":\"" + roleName + "\",\"teamEstimate\":\"" + mEstimateString + "\"}";
 
             Client client = Client.create();
                 WebResource webResource = client.resource(mBaseUrl + ApiUrls.SUBMIT_ESTIMATION_URL );
             ClientResponse response = webResource.type("application/json")
                     .header("Authorization", "Basic " + auth)
-                    .post(ClientResponse.class, input);
+                    .post(ClientResponse.class, minput);
 
             if (response.getStatus() != 200) {
                 throw new RuntimeException("Failed : HTTP error code : "

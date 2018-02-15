@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import adweb.com.awteamestimates.Models.CurrentEstimatedIssue;
+import adweb.com.awteamestimates.Models.GetRoles.RoleIdModel;
 
 /**
  * Created by PoojaGaonkar on 2/5/2018.
@@ -24,6 +25,7 @@ public class AppConstants {
     public static CurrentEstimatedIssue CurrentEstimatedIssue;
     public static boolean isRefreshed;
     public static ArrayList<String> ProjectRoleTitles;
-    public static HashMap<Integer, String> ProjectRoleMap;
     public static CharSequence CurrentSelectedRole;
+    public static Boolean isRoleEnabled;
+    public static ArrayList<RoleIdModel> ProjectRoleList;
 }

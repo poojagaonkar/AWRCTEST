@@ -31,11 +31,14 @@ import java.io.Console;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import adweb.com.awteamestimates.HomeActivity;
 import adweb.com.awteamestimates.Models.CurrentEstimatedIssue;
+import adweb.com.awteamestimates.Models.GetRoles.RoleIdModel;
 import adweb.com.awteamestimates.Models.GetRoles.RoleModel;
 import adweb.com.awteamestimates.Models.GetRoles.Roles;
 import adweb.com.awteamestimates.Models.ProjectModel;
@@ -161,6 +164,7 @@ public class SelectProjectFragment extends Fragment {
                     }
                     if(mModel.getIsEstimationsInstalled() !=null && mModel.getIsEstimationsInstalled())
                     {
+                        AppConstants.isRoleEnabled = mModel.getIsEstimationsInstalled();
                         layoutRole.setVisibility(View.VISIBLE);
 
 //                        try {
@@ -201,7 +205,17 @@ public class SelectProjectFragment extends Fragment {
                              {
 
                                 AppConstants.ProjectRoleTitles =new ArrayList<String>(mModel.getRoles().values());
-                                AppConstants.ProjectRoleMap = mModel.getRoles();
+
+                                AppConstants.ProjectRoleList = new ArrayList<RoleIdModel>();
+                                 Iterator it = mModel.getRoles().entrySet().iterator();
+                                while (it.hasNext())
+                                 {
+                                     Map.Entry pair = (Map.Entry)it.next();
+                                     RoleIdModel pModel = new RoleIdModel();
+                                     pModel.setRoleID(String.valueOf(pair.getKey()));
+                                     pModel.setRoleName(String.valueOf(pair.getValue()));
+                                    AppConstants.ProjectRoleList.add(pModel);
+                                 }
 
                                  final ArrayAdapter<CharSequence> adapter = new ArrayAdapter(getActivity(),android.R.layout.simple_spinner_item, AppConstants.ProjectRoleTitles);
                                  adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
