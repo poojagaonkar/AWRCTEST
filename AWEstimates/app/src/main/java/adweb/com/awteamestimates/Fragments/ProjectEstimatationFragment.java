@@ -1,6 +1,7 @@
 package adweb.com.awteamestimates.Fragments;
 
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -19,6 +20,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.PopupWindow;
+import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -42,6 +45,8 @@ import adweb.com.awteamestimates.R;
 import adweb.com.awteamestimates.Service.JiraServices;
 import adweb.com.awteamestimates.Utilities.AppConstants;
 import adweb.com.awteamestimates.Utilities.DialogHelper;
+
+import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -77,6 +82,7 @@ public class ProjectEstimatationFragment extends Fragment implements View.OnClic
     private String mEstimateString = "N/A";
     private Collection<RoleIdModel> mRoleIdCollection;
     private RoleIdModel mCurrentRole;
+    private String roleTitle ="";
 
     public ProjectEstimatationFragment() {
         // Required empty public constructor
@@ -160,17 +166,62 @@ public class ProjectEstimatationFragment extends Fragment implements View.OnClic
         if(AppConstants.isRefreshed)
         {
             ReloadProjectData();
+
+            LayoutInflater layoutInflater =(LayoutInflater)getActivity().getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+            View popupView = layoutInflater.inflate(R.layout.role_selection_alert_layout, null);
+
+            AlertDialog.Builder mbuild = new AlertDialog.Builder(getActivity());
+            mbuild.setView(popupView);
+            Button btnDismiss = (Button)popupView.findViewById(R.id.btnOK);
+
+            Spinner popupSpinner = (Spinner)popupView.findViewById(R.id.rolepopupspinner);
+            ArrayAdapter<String> adapter =new ArrayAdapter<String>(getActivity() ,android.R.layout.simple_spinner_item, AppConstants.ProjectRoleTitles);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            popupSpinner.setAdapter(adapter);
+
+            popupSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    mCurrentRole.setRoleName(adapter.getItem(i));
+                    RoleIdModel m =  AppConstants.ProjectRoleList.get(i);
+                    mCurrentRole.setRoleID(m.getRoleID());
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+
+                }
+            });
+
+            mbuild.setTitle("Select role");
+            AlertDialog mDialog = mbuild.create();
+            btnDismiss.setOnClickListener(new Button.OnClickListener(){
+
+                @Override
+                public void onClick(View v) {
+                    mDialog.dismiss();
+                    txtRoleTitle.setText(mCurrentRole.getRoleName());
+
+                }});
+
+            mDialog.show();
+
         }
 
         txtIssueTitle.setText(AppConstants.CurrentEstimatedIssue.getIssueTitle());
         txtProjectName.setText(AppConstants.CurrentSelectedProject);
         mIssueKey = AppConstants.CurrentEstimatedIssue.getIssueKey();
-        mRoleIdCollection = Collections2.filter(AppConstants.ProjectRoleList, val -> val.getRoleName().equals(AppConstants.CurrentSelectedRole));
-        mCurrentRole = mRoleIdCollection.iterator().next();
+        if(mRoleIdCollection == null) {
+            mRoleIdCollection = Collections2.filter(AppConstants.ProjectRoleList, val -> val.getRoleName().equals(AppConstants.CurrentSelectedRole));
+            mCurrentRole = mRoleIdCollection.iterator().next();
+        }
 
-        CharSequence roleTitle = AppConstants.CurrentSelectedRole !=null ? AppConstants.CurrentSelectedRole :  "Administrator";
+        if(roleTitle.isEmpty()) {
+            roleTitle = AppConstants.CurrentSelectedRole != null ? AppConstants.CurrentSelectedRole.toString() : "Administrator";
+            txtIssueEstimate.setText(mEstimateString);
+
+        }
         txtRoleTitle.setText(roleTitle);
-        txtIssueEstimate.setText(mEstimateString);
 
 
         btnAddWeeks.setOnClickListener(this);
