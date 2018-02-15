@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -65,6 +66,8 @@ public class ProjectEstimatationFragment extends Fragment implements View.OnClic
     private Iterator<CurrentEstimatedIssue> issueDetails;
     private String mIssueKey;
     private TextView txtMoreDetails;
+    private TextView txtIssueEstimate;
+    private TextView txtRoleTitle;
 
     public ProjectEstimatationFragment() {
         // Required empty public constructor
@@ -105,6 +108,8 @@ public class ProjectEstimatationFragment extends Fragment implements View.OnClic
 
         txtProjectName = view.findViewById(R.id.txtProjectName);
         txtIssueTitle = view.findViewById(R.id.txtIssueTitle);
+        txtIssueEstimate = view.findViewById(R.id.txtIssueEstimate);
+        txtRoleTitle = view.findViewById(R.id.txtRoleTitle);
         txtMoreDetails = view.findViewById(R.id.txtMoreDetails);
 
         Toolbar mToolbar = ((HomeActivity)getActivity()).toolbar;
@@ -152,6 +157,9 @@ public class ProjectEstimatationFragment extends Fragment implements View.OnClic
         txtProjectName.setText(AppConstants.CurrentSelectedProject);
         mIssueKey = AppConstants.CurrentEstimatedIssue.getIssueKey();
 
+        CharSequence roleTitle = AppConstants.CurrentSelectedRole !=null ? AppConstants.CurrentSelectedRole :  "Administrator";
+        txtRoleTitle.setText(roleTitle);
+        //txtIssueEstimate.setText();
 
 
         btnAddWeeks.setOnClickListener(this);
@@ -166,6 +174,9 @@ public class ProjectEstimatationFragment extends Fragment implements View.OnClic
 
         btnSubmit.setOnClickListener(this);
         txtMoreDetails.setOnClickListener(this);
+
+        getActivity().getWindow().setSoftInputMode(
+                WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
     }
 
     private void ReloadProjectData() {
@@ -216,16 +227,7 @@ public class ProjectEstimatationFragment extends Fragment implements View.OnClic
 
     }
 
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-////        setContentView(R.layout.activity_project_estimate);
-////        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-////        setSupportActionBar(toolbar);
-//
-//
-//
-//    }
+
 
     @Override
     public void onClick(View view) {
