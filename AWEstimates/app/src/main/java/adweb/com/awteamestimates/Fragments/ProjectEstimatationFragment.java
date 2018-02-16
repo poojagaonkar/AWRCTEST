@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.PopupWindow;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -28,6 +29,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.common.collect.Collections2;
+
+import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent;
+import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -83,11 +87,18 @@ public class ProjectEstimatationFragment extends Fragment implements View.OnClic
     private Collection<RoleIdModel> mRoleIdCollection;
     private RoleIdModel mCurrentRole;
     private String roleTitle ="";
+    private ScrollView scrollView;
 
     public ProjectEstimatationFragment() {
         // Required empty public constructor
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -126,6 +137,7 @@ public class ProjectEstimatationFragment extends Fragment implements View.OnClic
         txtIssueEstimate = view.findViewById(R.id.txtIssueEstimate);
         txtRoleTitle = view.findViewById(R.id.txtRoleTitle);
         txtMoreDetails = view.findViewById(R.id.txtMoreDetails);
+        scrollView = view.findViewById(R.id.scrollView);
 
         Toolbar mToolbar = ((HomeActivity)getActivity()).toolbar;
         mToolbar.findViewById(R.id.btnProjectNext).setVisibility(View.INVISIBLE);
@@ -153,6 +165,11 @@ public class ProjectEstimatationFragment extends Fragment implements View.OnClic
                             .alpha(1.0f)
                             .setListener(null);
 
+                    scrollView.post(new Runnable() {
+                        public void run() {
+                            scrollView.scrollTo(0, scrollView.getBottom());
+                        }
+                    });
 
                 } else {
 
@@ -237,8 +254,16 @@ public class ProjectEstimatationFragment extends Fragment implements View.OnClic
         btnSubmit.setOnClickListener(this);
         txtMoreDetails.setOnClickListener(this);
 
-        getActivity().getWindow().setSoftInputMode(
-                WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+        KeyboardVisibilityEvent.setEventListener(
+                getActivity(),
+                isOpen -> {
+
+                    scrollView.post(new Runnable() {
+                        public void run() {
+                            scrollView.scrollTo(0, scrollView.getBottom());
+                        }
+                    });
+                });
     }
 
     private void ReloadProjectData() {

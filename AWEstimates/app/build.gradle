@@ -43,4 +43,5 @@ dependencies {
     compile 'com.fasterxml.jackson.core:jackson-annotations:2.8.5'
     compile 'com.sun.jersey:jersey-client:1.9.1'
     compile 'com.google.guava:guava:23.5-android'
+    compile 'net.yslibrary.keyboardvisibilityevent:keyboardvisibilityevent:2.1.0'
 }
