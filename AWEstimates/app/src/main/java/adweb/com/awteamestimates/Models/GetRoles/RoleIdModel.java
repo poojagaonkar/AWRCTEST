@@ -25,4 +25,15 @@ public class RoleIdModel {
     }
 
     private  String RoleName;
+
+    private String RoleEstimate;
+
+    public String getRoleEstimate() {
+        return RoleEstimate;
+    }
+
+    public void setRoleEstimatee(String roleEstimate) {
+        RoleEstimate = roleEstimate;
+    }
+
 }

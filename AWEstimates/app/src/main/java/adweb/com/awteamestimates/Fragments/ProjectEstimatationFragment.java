@@ -202,6 +202,7 @@ public class ProjectEstimatationFragment extends Fragment implements View.OnClic
                     mCurrentRole.setRoleName(adapter.getItem(i));
                     RoleIdModel m =  AppConstants.ProjectRoleList.get(i);
                     mCurrentRole.setRoleID(m.getRoleID());
+                    mCurrentRole.setRoleEstimatee(m.getRoleEstimate());
                 }
 
                 @Override
@@ -233,9 +234,10 @@ public class ProjectEstimatationFragment extends Fragment implements View.OnClic
             mCurrentRole = mRoleIdCollection.iterator().next();
         }
 
+        txtIssueEstimate.setText(mCurrentRole.getRoleEstimate());
         if(roleTitle.isEmpty()) {
             roleTitle = AppConstants.CurrentSelectedRole != null ? AppConstants.CurrentSelectedRole.toString() : "Administrator";
-            txtIssueEstimate.setText(mEstimateString);
+            //txtIssueEstimate.setText(mEstimateString);
 
         }
         txtRoleTitle.setText(roleTitle);

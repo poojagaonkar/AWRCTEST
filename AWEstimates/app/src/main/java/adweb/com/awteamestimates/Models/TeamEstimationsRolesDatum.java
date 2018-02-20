@@ -24,6 +24,10 @@ public class TeamEstimationsRolesDatum {
     private Integer estimateLong;
     @JsonProperty("estimateFormatted")
     private String estimateFormatted;
+    @JsonProperty("Roleid")
+    private String roleid;
+    @JsonProperty("RoleName")
+    private String roleName;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
@@ -55,6 +59,26 @@ public class TeamEstimationsRolesDatum {
     @JsonProperty("estimateFormatted")
     public void setEstimateFormatted(String estimateFormatted) {
         this.estimateFormatted = estimateFormatted;
+    }
+
+    @JsonProperty("Roleid")
+    public String getRoleid() {
+        return roleid;
+    }
+
+    @JsonProperty("Roleid")
+    public void setRoleid(String roleid) {
+        this.roleid = roleid;
+    }
+
+    @JsonProperty("RoleName")
+    public String getRoleName() {
+        return roleName;
+    }
+
+    @JsonProperty("RoleName")
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
     }
 
     @JsonAnyGetter

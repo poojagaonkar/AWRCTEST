@@ -30,6 +30,7 @@ import com.google.common.collect.Collections2;
 import java.io.Console;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -42,6 +43,7 @@ import adweb.com.awteamestimates.Models.GetRoles.RoleIdModel;
 import adweb.com.awteamestimates.Models.GetRoles.RoleModel;
 import adweb.com.awteamestimates.Models.GetRoles.Roles;
 import adweb.com.awteamestimates.Models.ProjectModel;
+import adweb.com.awteamestimates.Models.TeamEstimationsRolesDatum;
 import adweb.com.awteamestimates.R;
 import adweb.com.awteamestimates.Service.JiraServices;
 import adweb.com.awteamestimates.Utilities.AppConstants;
@@ -214,6 +216,18 @@ public class SelectProjectFragment extends Fragment {
                                      RoleIdModel pModel = new RoleIdModel();
                                      pModel.setRoleID(String.valueOf(pair.getKey()));
                                      pModel.setRoleName(String.valueOf(pair.getValue()));
+                                     if(AppConstants.CurrentEstimatedIssue.getTeamEstimationsRolesData() != null && AppConstants.CurrentEstimatedIssue.getTeamEstimationsRolesData().size() >0)
+                                     {
+                                         for(TeamEstimationsRolesDatum bModel : AppConstants.CurrentEstimatedIssue.getTeamEstimationsRolesData())
+                                         {
+                                             if(bModel.getRoleid().equals(pair.getKey()))
+                                             {
+                                                 pModel.setRoleEstimatee(bModel.getEstimateFormatted());
+                                             }
+                                         }
+
+                                     }
+
                                     AppConstants.ProjectRoleList.add(pModel);
                                  }
 
