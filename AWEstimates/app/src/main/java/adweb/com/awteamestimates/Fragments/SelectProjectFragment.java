@@ -234,6 +234,7 @@ public class SelectProjectFragment extends Fragment {
                                  final ArrayAdapter<CharSequence> adapter = new ArrayAdapter(getActivity(),android.R.layout.simple_spinner_item, AppConstants.ProjectRoleTitles);
                                  adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                                  mRoleSpinner.setAdapter(adapter);
+                                 layoutRole.setVisibility(View.VISIBLE);
 
                                  mRoleSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
