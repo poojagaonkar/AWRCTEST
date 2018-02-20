@@ -291,6 +291,9 @@ public class ProjectEstimatationFragment extends Fragment implements View.OnClic
 
                         AppConstants.ProjectTitles.add(mIssue.getProjectName());
                         System.out.println(mIssue.getIssueKey() + "\n" + mIssue.getIssueTitle() + "\n" + mIssue.getProjectKey() + "\n" + mIssue.getProjectName());
+                        //AppConstants.CurrentSelectedProject =adapter.getItem(i);
+                        AppConstants.CurrentIssueDetails = Collections2.filter(AppConstants.FullProjectList, user -> user.getProjectName().equals(AppConstants.CurrentSelectedProject)).iterator();
+                        AppConstants.CurrentEstimatedIssue  = AppConstants.CurrentIssueDetails.next();
 
                     }
                 }

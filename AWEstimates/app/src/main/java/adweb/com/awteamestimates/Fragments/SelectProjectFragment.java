@@ -220,7 +220,7 @@ public class SelectProjectFragment extends Fragment {
                                      {
                                          for(TeamEstimationsRolesDatum bModel : AppConstants.CurrentEstimatedIssue.getTeamEstimationsRolesData())
                                          {
-                                             if(bModel.getRoleid().equals(pair.getKey()))
+                                             if(bModel.getRoleid()!= null &&  bModel.getRoleid().equals(pair.getKey()))
                                              {
                                                  pModel.setRoleEstimatee(bModel.getEstimateFormatted());
                                              }
