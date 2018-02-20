@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
+import android.widget.Button;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -79,6 +80,8 @@ public class JiraServices {
 
             dialog.setContentView(R.layout.custom_progress_layout);
             dialog.setMessage("Logging in..");
+            dialog.setCancelable(false);
+            dialog.setCanceledOnTouchOutside(false);
             dialog.show();
 
 
@@ -137,14 +140,20 @@ public class JiraServices {
 
             } catch (MalformedURLException e) {
                 e.printStackTrace();
+                mError = e;
             } catch (IOException e) {
                 e.printStackTrace();
+                mError = e;
             }
             catch (Exception ex)
             {
                 ex.printStackTrace();
                 mError = ex;
+                if (dialog.isShowing()) {
+                    dialog.dismiss();
+                }
                 return null;
+
             }
 
             // TODO: register the new account here.
@@ -174,11 +183,11 @@ public class JiraServices {
                 mContext.finish();
             } else {
 
+
                 mAlert.setTitle("Login Failed");
                 mAlert.setMessage(mError.getMessage());
                 mAlert.setPositiveButton("OK", null);
                 mAlert.create().show();
-
             }
 
             if (dialog.isShowing()) {
@@ -201,6 +210,7 @@ public class JiraServices {
         private final String mUserName;
         private final String mBaseUrl;
         private ProgressDialog dialog;
+        private Exception mError;
 
 
         public  GetUserDetails(Context mContext, String userName, String baseUrl)
@@ -248,6 +258,8 @@ public class JiraServices {
             } catch (Exception e) {
                 System.out.println("Username or Password wrong!");
                 e.printStackTrace();
+                mError = e;
+
             }
             return null;
         }

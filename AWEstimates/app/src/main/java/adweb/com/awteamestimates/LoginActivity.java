@@ -79,7 +79,7 @@ public class LoginActivity extends AppCompatActivity  {
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
-    private JiraServices.UserLoginTask mAuthTask = null;
+    public JiraServices.UserLoginTask mAuthTask = null;
 
     // UI references.
     private EditText mUserNameView;
@@ -95,6 +95,7 @@ public class LoginActivity extends AppCompatActivity  {
     private   String mUserSessionValue ="";
     private SharedPreferences mPrefs;
     private SharedPreferences.Editor editor;
+    public Button mUserNameSignInButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,7 +122,7 @@ public class LoginActivity extends AppCompatActivity  {
         });
 
 
-        Button mUserNameSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+         mUserNameSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mUserNameSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -170,71 +171,76 @@ public class LoginActivity extends AppCompatActivity  {
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
-        if (mAuthTask != null) {
-            return;
-        }
 
-        // Reset errors.
-        mUserNameView.setError(null);
-        mPasswordView.setError(null);
-        mBaseUrlView.setError(null);
+        try {
+//            if (mAuthTask != null) {
+//                return;
+//            }
 
-        // Store values at the time of the login attempt.
-         String password = mPasswordView.getText().toString();
-         baseUrl = mBaseUrlView.getText().toString();
-        userName = mUserNameView.getText().toString();
+            // Reset errors.
+            mUserNameView.setError(null);
+            mPasswordView.setError(null);
+            mBaseUrlView.setError(null);
+            mUserNameSignInButton.setEnabled(true);
 
-
-        boolean cancel = false;
-        View focusView = null;
-
-        // Check for a valid baseurl, if the user entered one.
-
-        if(TextUtils.isEmpty(baseUrl) )
-        {
-            mBaseUrlView .setError(getString(R.string.error_invalid_baseurl));
-            focusView  = mBaseUrlView;
-            cancel = true;
-        }
-
-        // Check for a valid password, if the user entered one.
-        if (TextUtils.isEmpty(password) ) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
-            focusView = mPasswordView;
-            cancel = true;
-        }
-
-        // Check for a valid userName address.
-        if (TextUtils.isEmpty(userName)) {
-            mUserNameView.setError(getString(R.string.error_field_required));
-            focusView = mUserNameView;
-            cancel = true;
-   }
+            // Store values at the time of the login attempt.
+            String password = mPasswordView.getText().toString();
+            baseUrl = mBaseUrlView.getText().toString();
+            userName = mUserNameView.getText().toString();
 
 
-        if (cancel) {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
-            focusView.requestFocus();
-        } else {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
+            boolean cancel = false;
+            View focusView = null;
 
-            try {
+            // Check for a valid baseurl, if the user entered one.
 
-
-
-                mAuthTask = null;
-                mAuthTask = new  JiraServices.UserLoginTask(this, userName, password,baseUrl);
-
-                mAuthTask.execute();
-
-
-
-            } catch (Exception e) {
-                e.printStackTrace();
+            if (TextUtils.isEmpty(baseUrl)) {
+                mBaseUrlView.setError(getString(R.string.error_invalid_baseurl));
+                focusView = mBaseUrlView;
+                cancel = true;
             }
 
+            // Check for a valid password, if the user entered one.
+            if (TextUtils.isEmpty(password)) {
+                mPasswordView.setError(getString(R.string.error_invalid_password));
+                focusView = mPasswordView;
+                cancel = true;
+            }
+
+            // Check for a valid userName address.
+            if (TextUtils.isEmpty(userName)) {
+                mUserNameView.setError(getString(R.string.error_field_required));
+                focusView = mUserNameView;
+                cancel = true;
+            }
+
+
+            if (cancel) {
+                // There was an error; don't attempt login and focus the first
+                // form field with an error.
+                focusView.requestFocus();
+            } else {
+                // Show a progress spinner, and kick off a background task to
+                // perform the user login attempt.
+
+                try {
+
+
+                    mAuthTask = null;
+                    mAuthTask = new JiraServices.UserLoginTask(this, userName, password, baseUrl);
+
+                    mAuthTask.execute();
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        }
+        catch (Exception ex)
+        {
 
         }
     }
