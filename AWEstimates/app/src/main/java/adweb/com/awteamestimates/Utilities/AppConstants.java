@@ -28,4 +28,5 @@ public class AppConstants {
     public static CharSequence CurrentSelectedRole;
     public static Boolean isRoleEnabled;
     public static ArrayList<RoleIdModel> ProjectRoleList;
+    public static String Protocol;
 }

@@ -29,10 +29,12 @@ import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -89,13 +91,15 @@ public class LoginActivity extends AppCompatActivity  {
  private  EditText mBaseUrlView;
     private String userName;
     private  String baseUrl;
-
+    private Spinner mProtocolSpinner;
 
     private   String mUserSessionName ="";
     private   String mUserSessionValue ="";
     private SharedPreferences mPrefs;
     private SharedPreferences.Editor editor;
     public Button mUserNameSignInButton;
+    private List<String> protocolList ;
+    private String  protocolString;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +112,13 @@ public class LoginActivity extends AppCompatActivity  {
         mUserNameView = (EditText) findViewById(R.id.email);
         mBaseUrlView = (EditText)findViewById(R.id.etBaseUrl);
         mPasswordView = (EditText) findViewById(R.id.password);
+        mProtocolSpinner = (Spinner)findViewById(R.id.spinnerProtocol);
+
+
+        protocolList = new ArrayList<String>();
+        protocolList.add("https://");
+        protocolList.add("http://");
+
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -138,16 +149,35 @@ public class LoginActivity extends AppCompatActivity  {
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
 
+        final ArrayAdapter<CharSequence> adapter = new ArrayAdapter(this,android.R.layout.simple_spinner_dropdown_item, protocolList);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mProtocolSpinner.setAdapter(adapter);
+
+        mProtocolSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+                protocolString = adapter.getItem(i).toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                protocolString = adapter.getItem(0).toString();
+            }
+        });
+
         baseUrl = mPrefs.getString(getResources().getString(R.string.pref_baseUrl), null);
         userName = mPrefs.getString(getResources().getString(R.string.pref_userName), null);
+        protocolString = mPrefs.getString("Protocol", null);
 
-        if(!TextUtils.isEmpty(baseUrl) && !TextUtils.isEmpty(userName))
+        if(!TextUtils.isEmpty(baseUrl) && !TextUtils.isEmpty(userName)&& !TextUtils.isEmpty(protocolString))
         {
-            mBaseUrlView.setText(baseUrl);
+            String[] tempUrl = baseUrl.split("//");
+            mBaseUrlView.setText(tempUrl[1]);
             mUserNameView.setText(userName);
+            int spinnerPosition = adapter.getPosition(protocolString);
+            mProtocolSpinner.setSelection(spinnerPosition);
         }
-
-
 
 
     }
@@ -198,6 +228,11 @@ public class LoginActivity extends AppCompatActivity  {
                 mBaseUrlView.setError(getString(R.string.error_invalid_baseurl));
                 focusView = mBaseUrlView;
                 cancel = true;
+            }
+            else
+            {
+                AppConstants.Protocol = protocolString;
+                baseUrl = protocolString + baseUrl;
             }
 
             // Check for a valid password, if the user entered one.
