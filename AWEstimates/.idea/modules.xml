@@ -3,7 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/AWEstimates.iml" filepath="$PROJECT_DIR$/AWEstimates.iml" />
+      <module fileurl="file://E:\Source\Adweb\AWRCTESTClone\AWRCTEST\AWEstimates\AWEstimates.iml" filepath="E:\Source\Adweb\AWRCTESTClone\AWRCTEST\AWEstimates\AWEstimates.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://E:\Source\Adweb\AWRCTESTClone\AWRCTEST\AWEstimates\app\app.iml" filepath="E:\Source\Adweb\AWRCTESTClone\AWRCTEST\AWEstimates\app\app.iml" />
     </modules>
   </component>
 </project>
