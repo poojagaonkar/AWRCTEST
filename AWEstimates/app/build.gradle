@@ -44,4 +44,6 @@ dependencies {
     compile 'com.sun.jersey:jersey-client:1.9.1'
     compile 'com.google.guava:guava:23.5-android'
     compile 'net.yslibrary.keyboardvisibilityevent:keyboardvisibilityevent:2.1.0'
+    compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'de.hdodenhof:circleimageview:2.2.0'
 }

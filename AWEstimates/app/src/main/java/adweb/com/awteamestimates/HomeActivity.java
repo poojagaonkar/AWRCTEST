@@ -27,10 +27,12 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientHandlerException;
 import com.sun.jersey.api.client.ClientResponse;
@@ -87,6 +89,7 @@ public class HomeActivity extends AppCompatActivity
     private Button btnProjectNext;
     public Toolbar toolbar;
     public NavigationView navigationView;
+    private ImageView imgUserImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,7 +107,7 @@ public class HomeActivity extends AppCompatActivity
         txtUserEmail= (TextView)navigationView.getHeaderView(0).findViewById(R.id.txtUserEmail);
         txtToolBarTitle = (TextView)toolbar.findViewById(R.id.txtToolbarTitle);
         btnProjectNext = findViewById(R.id.btnProjectNext);
-
+        imgUserImage =(ImageView) navigationView.getHeaderView(0).findViewById(R.id.imgImageUser);
 
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         mEdit = mPrefs.edit();
@@ -127,6 +130,7 @@ public class HomeActivity extends AppCompatActivity
 
         loadFragment(new SelectProjectFragment());
 
+        GetUserDetails();
 
     }
 
@@ -141,12 +145,19 @@ public class HomeActivity extends AppCompatActivity
             if(mModel != null ) {
                 String userFirstName = mModel.getDisplayName();
                 String userEmail = mModel.getEmailAddress();
+                String userImageUrl = mModel.getAvatarUrls().get48x48();
                 //   String avrUrl = mModel.getAvatarUrls().get48x48();
                 System.out.println(userFirstName + "," + userEmail + ",");
 
                 mEdit.putString(getResources().getString(R.string.pref_userDisplayName), userFirstName);
                 mEdit.putString(getResources().getString(R.string.pref_userEmail), userEmail);
                 mEdit.commit();
+
+                Picasso.with(this)
+                        .load(userImageUrl)
+                        .placeholder(R.drawable.ic_person_outline_black_36dp)
+                        .error(R.drawable.ic_person_outline_black_36dp)
+                        .into(imgUserImage);
 
                 txtUserEmail.setText(userEmail);
                 txtUserName.setText(userFirstName);

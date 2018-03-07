@@ -41,7 +41,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_alignParentRight="true"
-                android:background="@color/colorPrimary"
+                android:background="@color/colorPrimaryDark"
                 android:text="Next"
                 android:layout_centerVertical="true"
                 android:id="@+id/btnProjectNext"/>
