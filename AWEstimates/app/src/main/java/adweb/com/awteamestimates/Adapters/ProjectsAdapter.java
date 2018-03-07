@@ -34,6 +34,7 @@ public class ProjectsAdapter extends RecyclerView.Adapter<ProjectsAdapter.MyView
     private ProjectsAdapterListener listener;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
+        private final TextView countBubble;
         public TextView name, phone;
         public ImageView thumbnail;
 
@@ -41,6 +42,7 @@ public class ProjectsAdapter extends RecyclerView.Adapter<ProjectsAdapter.MyView
             super(view);
             name = view.findViewById(R.id.txtprojectName);
             thumbnail = view.findViewById(R.id.thumbnail);
+            countBubble = view.findViewById(R.id.countBubble);
 
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -72,6 +74,14 @@ public class ProjectsAdapter extends RecyclerView.Adapter<ProjectsAdapter.MyView
         CurrentEstimatedIssue mProject = projectListFiltered.get(position);
         holder.name.setText(mProject.getProjectName());
 
+        if(mProject.getTeamEstimationsRolesData().size() == 0)
+        {
+            holder.countBubble.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            holder.countBubble.setVisibility(View.INVISIBLE);
+        }
 
         //TODO: Uncomment this after image url is set in api
 //        Picasso.with(context)
