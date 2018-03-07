@@ -173,7 +173,7 @@ public class LoginActivity extends AppCompatActivity  {
         if(!TextUtils.isEmpty(baseUrl) && !TextUtils.isEmpty(userName)&& !TextUtils.isEmpty(protocolString))
         {
             String[] tempUrl = baseUrl.split("//");
-            mBaseUrlView.setText(tempUrl[1]+"//");
+            mBaseUrlView.setText(tempUrl[1]);
             mUserNameView.setText(userName);
             int spinnerPosition = adapter.getPosition(protocolString);
             mProtocolSpinner.setSelection(spinnerPosition);

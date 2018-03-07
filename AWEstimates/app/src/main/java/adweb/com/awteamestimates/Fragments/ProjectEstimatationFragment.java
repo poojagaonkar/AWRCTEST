@@ -140,7 +140,7 @@ public class ProjectEstimatationFragment extends Fragment implements View.OnClic
         scrollView = view.findViewById(R.id.scrollView);
 
         Toolbar mToolbar = ((HomeActivity)getActivity()).toolbar;
-        mToolbar.findViewById(R.id.btnProjectNext).setVisibility(View.INVISIBLE);
+        //mToolbar.findViewById(R.id.btnProjectNext).setVisibility(View.INVISIBLE);
 
 
         mPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());

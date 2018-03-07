@@ -106,7 +106,7 @@ public class HomeActivity extends AppCompatActivity
         txtUserName= (TextView)navigationView.getHeaderView(0).findViewById(R.id.txtUserName);
         txtUserEmail= (TextView)navigationView.getHeaderView(0).findViewById(R.id.txtUserEmail);
         txtToolBarTitle = (TextView)toolbar.findViewById(R.id.txtToolbarTitle);
-        btnProjectNext = findViewById(R.id.btnProjectNext);
+//        btnProjectNext = findViewById(R.id.btnProjectNext);
         imgUserImage =(ImageView) navigationView.getHeaderView(0).findViewById(R.id.imgImageUser);
 
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -120,7 +120,6 @@ public class HomeActivity extends AppCompatActivity
         toggle.syncState();
 
         navigationView.setNavigationItemSelectedListener(this);
-
 
 
 
@@ -152,6 +151,7 @@ public class HomeActivity extends AppCompatActivity
                 mEdit.putString(getResources().getString(R.string.pref_userDisplayName), userFirstName);
                 mEdit.putString(getResources().getString(R.string.pref_userEmail), userEmail);
                 mEdit.commit();
+
 
                 Picasso.with(this)
                         .load(userImageUrl)
