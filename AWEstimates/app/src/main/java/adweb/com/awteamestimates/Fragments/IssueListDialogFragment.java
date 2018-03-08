@@ -17,6 +17,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -38,6 +39,7 @@ public class IssueListDialogFragment extends BottomSheetDialogFragment {
     private static final String ARG_ITEM_LIST= "item_list";
     private Listener mListener;
     private List<String> optionsList;
+    private Button btnCancelBottomSheet;
 
     // TODO: Customize parameters
     public static IssueListDialogFragment newInstance(ArrayList<CharSequence> mOptionsList) {
@@ -71,10 +73,19 @@ public class IssueListDialogFragment extends BottomSheetDialogFragment {
 
 
         final RecyclerView recyclerView = view.findViewById(R.id.list);
+        btnCancelBottomSheet = (Button) view.findViewById(R.id.btnCancelBottomSheet);
+
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
         recyclerView.setAdapter(new IssueAdapter(getArguments().getCharSequenceArrayList(ARG_ITEM_LIST)));
+
+        btnCancelBottomSheet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dismiss();
+            }
+        });
     }
 
 

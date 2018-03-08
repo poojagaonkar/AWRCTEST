@@ -25,6 +25,12 @@ public  class ApiUrls {
      *  eg: http://172.21.128.209:2990/jira/rest/api/2/issue/RCDEM-1
      *  Params : Basic auth username and password
      */
+
+    public  static  String FETCH_ROLE_ESTIMATES = "rest/adwebTeamEstimates/2/teamEstimation/currentTeamEstimations/";
+    /*
+    * Fetches more issue details
+
+     */
     public  static  String MORE_DETAILS_URL = "/rest/api/2/issue/";
 
     /**
