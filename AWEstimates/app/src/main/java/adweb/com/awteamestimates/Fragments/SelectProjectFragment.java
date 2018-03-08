@@ -2,6 +2,7 @@ package adweb.com.awteamestimates.Fragments;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
@@ -46,6 +47,7 @@ import java.util.concurrent.ExecutionException;
 
 import adweb.com.awteamestimates.Adapters.ProjectsAdapter;
 import adweb.com.awteamestimates.HomeActivity;
+import adweb.com.awteamestimates.IssueSummaryActivity;
 import adweb.com.awteamestimates.Models.CurrentEstimatedIssue;
 import adweb.com.awteamestimates.Models.GetRoles.RoleIdModel;
 import adweb.com.awteamestimates.Models.GetRoles.RoleModel;
@@ -399,7 +401,7 @@ public class SelectProjectFragment extends Fragment implements ProjectsAdapter.P
 //            e.printStackTrace();
 //        }
 
-       // loadFragment(new ProjectEstimatationFragment());
+        getActivity().startActivity(new Intent(getActivity(), IssueSummaryActivity.class));
 
     }
 
