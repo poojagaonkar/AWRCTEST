@@ -207,14 +207,11 @@ public class SelectProjectFragment extends Fragment implements ProjectsAdapter.P
 
 
 
-//                    if(mModel.getIsEstimationsInstalled() !=null && mModel.getIsEstimationsInstalled())
-//                    {
-//                        AppConstants.isRoleEnabled = mModel.getIsEstimationsInstalled();
-//                        layoutRole.setVisibility(View.VISIBLE);
-//
-//
-//
-//                    }
+                    if(mModel.getIsEstimationsInstalled() !=null && mModel.getIsEstimationsInstalled())
+                    {
+                        AppConstants.isRoleEnabled = mModel.getIsEstimationsInstalled();
+
+                    }
 
                 }
                 else
@@ -341,65 +338,6 @@ public class SelectProjectFragment extends Fragment implements ProjectsAdapter.P
         //AppConstants.CurrentIssueDetails = Collections2.filter(AppConstants.FullProjectList, user -> user.getProjectName().equals(AppConstants.CurrentSelectedProject)).iterator();
         AppConstants.CurrentEstimatedIssue  = currentEstimatedIssue;
 
-//        try {
-//            JiraServices.GetRoleDetails getRoleDetails = new JiraServices.GetRoleDetails(getActivity(), mUserName, mBaseUrl, AppConstants.CurrentEstimatedIssue.getIssueKey());
-//            RoleModel mModel = getRoleDetails.execute().get();
-//
-//            if(mModel !=null)
-//            {
-//
-//                AppConstants.ProjectRoleTitles =new ArrayList<String>(mModel.getRoles().values());
-//
-//                AppConstants.ProjectRoleList = new ArrayList<RoleIdModel>();
-//                Iterator it = mModel.getRoles().entrySet().iterator();
-//                while (it.hasNext())
-//                {
-//                    Map.Entry pair = (Map.Entry)it.next();
-//                    RoleIdModel pModel = new RoleIdModel();
-//                    pModel.setRoleID(String.valueOf(pair.getKey()));
-//                    pModel.setRoleName(String.valueOf(pair.getValue()));
-//                    if(AppConstants.CurrentEstimatedIssue.getTeamEstimationsRolesData() != null && AppConstants.CurrentEstimatedIssue.getTeamEstimationsRolesData().size() >0)
-//                    {
-//                        for(TeamEstimationsRolesDatum bModel : AppConstants.CurrentEstimatedIssue.getTeamEstimationsRolesData())
-//                        {
-//                            if(bModel.getRoleid()!= null &&  bModel.getRoleid().equals(pair.getKey()))
-//                            {
-//                                pModel.setRoleEstimatee(bModel.getEstimateFormatted());
-//                            }
-//                        }
-//
-//                    }
-//
-//                    AppConstants.ProjectRoleList.add(pModel);
-//                }
-//
-//                final ArrayAdapter<CharSequence> adapter = new ArrayAdapter(getActivity(),android.R.layout.simple_spinner_item, AppConstants.ProjectRoleTitles);
-//                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//                mRoleSpinner.setAdapter(adapter);
-//                layoutRole.setVisibility(View.VISIBLE);
-//
-//                mRoleSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//
-//
-//                    @Override
-//                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-//
-//                        AppConstants.CurrentSelectedRole = adapter.getItem(i);
-//                    }
-//
-//                    @Override
-//                    public void onNothingSelected(AdapterView<?> adapterView) {
-//
-//                    }
-//                });
-//
-//            }
-//
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        } catch (ExecutionException e) {
-//            e.printStackTrace();
-//        }
 
         getActivity().startActivity(new Intent(getActivity(), IssueSummaryActivity.class));
 
