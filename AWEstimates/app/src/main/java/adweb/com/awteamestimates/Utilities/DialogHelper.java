@@ -7,7 +7,9 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Build;
+import android.support.annotation.Nullable;
 import android.view.View;
 
 import adweb.com.awteamestimates.R;
@@ -39,12 +41,27 @@ public class DialogHelper {
         }
     }
 
-    public  static void ShowAlert(Activity mActivity, String title, String message)
+    public  static void ShowAlert(Activity mActivity, String title, String message, boolean shouldFinishActivity)
     {
         AlertDialog.Builder mAlert = new AlertDialog.Builder(mActivity, R.style.CustomDialog);
         mAlert.setTitle(title);
         mAlert.setMessage(message);
-        mAlert.setPositiveButton("Ok", null);
+
+
+        if(!shouldFinishActivity) {
+            mAlert.setPositiveButton("Ok", null);
+        }
+        else
+        {
+            mAlert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+
+                    mActivity.finish();
+                }
+            });
+        }
+
         mAlert.create().show();
     }
 

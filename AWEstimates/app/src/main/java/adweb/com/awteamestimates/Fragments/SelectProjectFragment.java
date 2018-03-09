@@ -1,5 +1,6 @@
 package adweb.com.awteamestimates.Fragments;
 
+import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -251,6 +252,9 @@ public class SelectProjectFragment extends Fragment implements ProjectsAdapter.P
         }
         catch (Exception ex)
         {
+           AlertDialog.Builder mAlert =  new AlertDialog.Builder(getActivity());
+           mAlert.setTitle("Error");
+           mAlert.setMessage(ex.getMessage()).create().show();
             ex.printStackTrace();
         }
         //endregion

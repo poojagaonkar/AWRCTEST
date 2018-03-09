@@ -398,7 +398,7 @@ public class ProjectEstimatationFragment extends Fragment implements View.OnClic
 
                             if (estimateModel != null && estimateModel.getSuccess() == 200) {
 
-                                DialogHelper.ShowAlert(getActivity(), "Success", "Estimate submitted successfully");
+                                DialogHelper.ShowAlert(getActivity(), "Success", "Estimate submitted successfully", false);
                                 etWeeks.setText("");
                                 etDays.setText("");
                                 etHours.setText("");
@@ -414,7 +414,7 @@ public class ProjectEstimatationFragment extends Fragment implements View.OnClic
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
-                            DialogHelper.ShowAlert(getActivity(), "Error", e.getMessage());
+                            DialogHelper.ShowAlert(getActivity(), "Error", e.getMessage(), false);
                         }
 
                     } else {

@@ -1,5 +1,6 @@
 package adweb.com.awteamestimates;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -56,6 +57,7 @@ public class IssueSummaryActivity extends AppCompatActivity implements  IssueLis
     private RoleIdModel mCurrentRole;
     private CardView cardView;
     private Button btnCancelBottomSheet;
+    private  TextView toolbarTxtProjectTitle;
 
 
     @Override
@@ -68,8 +70,9 @@ public class IssueSummaryActivity extends AppCompatActivity implements  IssueLis
         rowOrgEstimate = (TableRow)findViewById(R.id.tableRowOrgEstimate);
         rowMyEstimate = (TableRow)findViewById(R.id.tableRowMyEstimate);
         txtOrgEstimate = (TextView)rowOrgEstimate.findViewById(R.id.txtOrgEstimate);
-        txtMyEstimate = (TextView)rowOrgEstimate.findViewById(R.id.txtMyEstimate);
+        txtMyEstimate = (TextView)rowMyEstimate.findViewById(R.id.txtMyEstimate);
         cardView = (CardView)findViewById(R.id.card_view);
+        toolbarTxtProjectTitle = toolbar.findViewById(R.id.toolbarProjectTitle);
 
         setSupportActionBar(toolbar);
 
@@ -78,6 +81,7 @@ public class IssueSummaryActivity extends AppCompatActivity implements  IssueLis
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_24dp);
 
+        toolbarTxtProjectTitle.setText(AppConstants.CurrentSelectedProject);
 
 
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -97,6 +101,8 @@ public class IssueSummaryActivity extends AppCompatActivity implements  IssueLis
             mRoleIdCollection = Collections2.filter(AppConstants.ProjectRoleList, val -> val.getRoleName().equals(AppConstants.CurrentSelectedRole));
             mCurrentRole = mRoleIdCollection.iterator().next();
         }
+
+        AppConstants.CurrentRoleDetails = mCurrentRole;
 
         txtOrgEstimate.setText(mCurrentRole.getRoleEstimate());
 
@@ -158,11 +164,12 @@ public class IssueSummaryActivity extends AppCompatActivity implements  IssueLis
                     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
                         AppConstants.CurrentSelectedRole = adapter.getItem(i);
-                        if(mRoleIdCollection == null) {
+                        if(mRoleIdCollection != null) {
                             mRoleIdCollection = Collections2.filter(AppConstants.ProjectRoleList, val -> val.getRoleName().equals(AppConstants.CurrentSelectedRole));
                             mCurrentRole = mRoleIdCollection.iterator().next();
                         }
 
+                        AppConstants.CurrentRoleDetails = mCurrentRole;
                         txtOrgEstimate.setText(mCurrentRole.getRoleEstimate());
                     }
 
@@ -185,8 +192,35 @@ public class IssueSummaryActivity extends AppCompatActivity implements  IssueLis
     @Override
     public void onIssueClicked(int position) {
 
+        switch (position)
+        {
+            case 0:
+                this.startActivityForResult(new Intent(this, EstimateIssueActivity.class), 0);
+                break;
+            case 1:
+                break;
+            default:
+                    break;
+        }
+
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // check that it is the SecondActivity with an OK result
+        if (requestCode == 0) {
+            if (resultCode == RESULT_OK) {
+
+                // get String data from Intent
+                String returnString = data.getStringExtra("MyEstimates");
+
+                // set text view with string
+              txtMyEstimate.setText(returnString);
+            }
+        }
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -209,7 +243,7 @@ public class IssueSummaryActivity extends AppCompatActivity implements  IssueLis
                 Toast.makeText(this, "Refreshing..", Toast.LENGTH_SHORT)
                         .show();
                 break;
-            case R.id.homeAsUp:
+            case android.R.id.home:
                 this.finish();
                 break;
             default:

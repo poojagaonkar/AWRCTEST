@@ -41,6 +41,10 @@
         <activity
             android:name=".IssueSummaryActivity"
             android:label="@string/title_activity_issue_summary"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".EstimateIssueActivity"
+            android:label="@string/title_activity_estimate_issue"
             android:theme="@style/AppTheme"></activity>
     </application>
 
