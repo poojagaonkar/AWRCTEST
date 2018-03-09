@@ -10,8 +10,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.concurrent.ExecutionException;
 
 import adweb.com.awteamestimates.Adapters.MoreDetailsAdapter;
@@ -26,6 +28,7 @@ public class IssueDetailsActivity extends AppCompatActivity {
     public  SharedPreferences.Editor mEdit ;
     private  String mUserName ;
     private  String mBaseUrl;
+    private TextView txtToolbarTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,9 +37,13 @@ public class IssueDetailsActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        getSupportActionBar().setDisplayShowTitleEnabled(true);
+         txtToolbarTitle = (TextView) toolbar.findViewById(R.id.toolbarIssueDetailsTitle);
+
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(getResources().getDrawable(R.drawable.ic_arrow_back_white_24dp));
+        getSupportActionBar().setHomeAsUpIndicator(getResources().getDrawable(R.drawable.ic_arrow_back_black_24dp));
+
+        txtToolbarTitle.setText(AppConstants.CurrentEstimatedIssue.getIssueTitle());
 
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         mEdit = mPrefs.edit();
@@ -51,7 +58,8 @@ public class IssueDetailsActivity extends AppCompatActivity {
 
             if(mModel !=null)
             {
-                AppConstants.CurrentProjectDetailMap= new HashMap<String, String>();
+                AppConstants.CurrentProjectDetailMap= new LinkedHashMap<>();
+                AppConstants.CurrentProjectDetailMap.put("Issue Title :  ", AppConstants.CurrentEstimatedIssue.getIssueTitle());
                 AppConstants.CurrentProjectDetailMap.put("Project Name :  ", AppConstants.CurrentEstimatedIssue.getProjectName());
                 AppConstants.CurrentProjectDetailMap.put("Description :  ", mModel.getFields().getIssuetype().getDescription());
                 AppConstants.CurrentProjectDetailMap.put("Issue Type :  ",  mModel.getFields().getIssuetype().getName());

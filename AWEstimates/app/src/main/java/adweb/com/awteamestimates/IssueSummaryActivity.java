@@ -28,14 +28,17 @@ import com.google.common.collect.Collections2;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import adweb.com.awteamestimates.Fragments.IssueListDialogFragment;
+import adweb.com.awteamestimates.Models.CurrentEstimatedIssue;
 import adweb.com.awteamestimates.Models.GetRoles.RoleIdModel;
 import adweb.com.awteamestimates.Models.GetRoles.RoleModel;
+import adweb.com.awteamestimates.Models.ProjectModel;
 import adweb.com.awteamestimates.Models.TeamEstimationsRolesDatum;
 import adweb.com.awteamestimates.Service.JiraServices;
 import adweb.com.awteamestimates.Utilities.AppConstants;
@@ -198,6 +201,8 @@ public class IssueSummaryActivity extends AppCompatActivity implements  IssueLis
                 this.startActivityForResult(new Intent(this, EstimateIssueActivity.class), 0);
                 break;
             case 1:
+                this.startActivity(new Intent(this, IssueDetailsActivity.class));
+
                 break;
             default:
                     break;
@@ -218,6 +223,7 @@ public class IssueSummaryActivity extends AppCompatActivity implements  IssueLis
 
                 // set text view with string
               txtMyEstimate.setText(returnString);
+
             }
         }
     }
@@ -240,8 +246,9 @@ public class IssueSummaryActivity extends AppCompatActivity implements  IssueLis
         switch (item.getItemId()) {
             // action with ID action_refresh was selected
             case R.id.action_refresh:
-                Toast.makeText(this, "Refreshing..", Toast.LENGTH_SHORT)
-                        .show();
+
+                GetProjectsDetails();
+                Toast.makeText(this, "Refreshing..", Toast.LENGTH_SHORT) .show();
                 break;
             case android.R.id.home:
                 this.finish();
@@ -251,6 +258,42 @@ public class IssueSummaryActivity extends AppCompatActivity implements  IssueLis
         }
 
         return true;
+    }
+
+    private void GetProjectsDetails() {
+
+        try {
+            JiraServices.GetProjectDetails getProjectDetails = new JiraServices.GetProjectDetails(this,  mUserName, mBaseUrl);
+            ProjectModel mModel = getProjectDetails.execute().get();
+
+            AppConstants.isRefreshed = false;
+
+            if(mModel!=null)
+            {
+                AppConstants.FullProjectList = mModel.getCurrentEstimatedIssue();
+                Collections.reverse(AppConstants.FullProjectList);
+                AppConstants.ProjectTitles = new ArrayList<>();
+
+                for (CurrentEstimatedIssue mIssue : AppConstants.FullProjectList) {
+
+                    AppConstants.ProjectTitles.add(mIssue.getProjectName());
+                    System.out.println(mIssue.getIssueKey() + "\n" + mIssue.getIssueTitle() + "\n" + mIssue.getProjectKey() + "\n" + mIssue.getProjectName());
+
+                }
+
+                AppConstants.CurrentIssueDetails = Collections2.filter(AppConstants.FullProjectList, user -> user.getProjectName().equals(AppConstants.CurrentSelectedProject)).iterator();
+                AppConstants.CurrentEstimatedIssue  = AppConstants.CurrentIssueDetails.next();
+
+                txtIssueTitle.setText(AppConstants.CurrentEstimatedIssue.getIssueTitle());
+                txtOrgEstimate.setText("N/A");
+                txtMyEstimate.setText("N/A");
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
