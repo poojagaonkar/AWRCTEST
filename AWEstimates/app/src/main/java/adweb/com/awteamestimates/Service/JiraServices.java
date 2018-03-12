@@ -176,6 +176,7 @@ public class JiraServices {
                 editor.putString(mContext.getResources().getString(R.string.pref_userName), mUserName);
                 editor.putString("Protocol", AppConstants.Protocol);
                 AppConstants.tempPass = mPassword;
+                AppConstants.BaseUrl  = mBaseUrl;
                 editor.commit();
 
                 //Start next activity

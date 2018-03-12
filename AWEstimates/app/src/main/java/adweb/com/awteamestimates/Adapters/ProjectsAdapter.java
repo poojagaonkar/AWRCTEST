@@ -1,5 +1,6 @@
 package adweb.com.awteamestimates.Adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ahmadrosid.svgloader.SvgLoader;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -29,7 +31,7 @@ import adweb.com.awteamestimates.Utilities.AppConstants;
 public class ProjectsAdapter extends RecyclerView.Adapter<ProjectsAdapter.MyViewHolder> implements  Filterable  {
     private  List<CurrentEstimatedIssue> projectList;
     private  List<CurrentEstimatedIssue> projectListFiltered;
-    private Context context;
+    private Activity context;
 
     private ProjectsAdapterListener listener;
 
@@ -55,7 +57,7 @@ public class ProjectsAdapter extends RecyclerView.Adapter<ProjectsAdapter.MyView
     }
 
 
-    public ProjectsAdapter(Context context, ProjectsAdapterListener listener) {
+    public ProjectsAdapter(Activity context, ProjectsAdapterListener listener) {
         this.context = context;
         this.listener = listener;
         this.projectList = AppConstants.FullProjectList;
@@ -90,6 +92,12 @@ public class ProjectsAdapter extends RecyclerView.Adapter<ProjectsAdapter.MyView
 //                .error(R.drawable.ic_description_blue_grey_600_36dp)
 //                .centerCrop()
 //                .into(holder.thumbnail);
+
+        String avatarUrl = AppConstants.BaseUrl+"/secure/projectavatar?avatarId="+ mProject.getAvatar();
+        SvgLoader.pluck()
+                .with(context)
+                .setPlaceHolder(R.mipmap.ic_launcher, R.mipmap.ic_launcher)
+                .load(avatarUrl, holder.thumbnail);
     }
 
     @Override
