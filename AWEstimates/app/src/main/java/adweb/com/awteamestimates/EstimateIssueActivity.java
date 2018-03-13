@@ -183,11 +183,11 @@ public class EstimateIssueActivity extends AppCompatActivity implements View.OnC
                                 Intent intent = new Intent();
                                 intent.putExtra("MyEstimates", mEstimateString);
                                 setResult(RESULT_OK, intent);
-                                finish();
+                              //  finish();
                                 InputMethodManager imm = (InputMethodManager)this.getSystemService(Context.INPUT_METHOD_SERVICE);
                                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
 
-                                DialogHelper.ShowAlert(this, "Success", "Estimate submitted successfully", true);
+//                                DialogHelper.ShowAlert(this, "Success", "Estimate submitted successfully", true);
                                 etWeeks.setText("");
                                 etDays.setText("");
                                 etHours.setText("");

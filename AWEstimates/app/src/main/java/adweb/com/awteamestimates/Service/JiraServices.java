@@ -38,6 +38,7 @@ import adweb.com.awteamestimates.Models.ProjectModel;
 import adweb.com.awteamestimates.Models.UserModel;
 import adweb.com.awteamestimates.R;
 import adweb.com.awteamestimates.Utilities.AppConstants;
+import adweb.com.awteamestimates.Utilities.DialogHelper;
 
 /**
  * Created by PoojaGaonkar on 2/6/2018.
@@ -451,6 +452,7 @@ public class JiraServices {
         private  final  String mBaseUrl;
         private  final String mEstimateString;
         private  final String mIssueKey;
+        private  Context mContext;
         private  ProgressDialog dialog = null;
         private  String roleId;
         private  String roleName ;
@@ -462,7 +464,7 @@ public class JiraServices {
             this.mBaseUrl = baseUrl;
             this.mEstimateString = estimateString;
             this.mIssueKey = issueKey;
-            this.dialog = new ProgressDialog(mContext ,android.R.style.Theme_DeviceDefault_Light_Dialog_NoActionBar);
+            this.mContext = mContext;
 
         }
 
@@ -475,13 +477,15 @@ public class JiraServices {
             this.roleId = roleID;
             this.roleName = roleName;
             this.dialog = new ProgressDialog(activity ,android.R.style.Theme_DeviceDefault_Light_Dialog_NoActionBar);
-
+            this.mContext = activity;
         }
 
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+
+            dialog = new ProgressDialog(mContext ,android.R.style.Theme_DeviceDefault_Light_Dialog_NoActionBar);
 
             dialog.setContentView(R.layout.custom_progress_layout);
             dialog.setMessage("Submitting estimate..");
@@ -557,6 +561,8 @@ public class JiraServices {
             if(dialog.isShowing())
             {
                 dialog.dismiss();;
+                DialogHelper.ShowAlert(mContext, "Success", "Estimate submitted successfully", true);
+
             }
         }
 

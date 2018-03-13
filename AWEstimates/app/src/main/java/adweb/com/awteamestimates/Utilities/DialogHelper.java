@@ -41,7 +41,7 @@ public class DialogHelper {
         }
     }
 
-    public  static void ShowAlert(Activity mActivity, String title, String message, boolean shouldFinishActivity)
+    public  static void ShowAlert(Context mActivity, String title, String message, boolean shouldFinishActivity)
     {
         AlertDialog.Builder mAlert = new AlertDialog.Builder(mActivity, R.style.CustomDialog);
         mAlert.setTitle(title);
@@ -57,7 +57,7 @@ public class DialogHelper {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
 
-                    mActivity.finish();
+                    ((Activity) mActivity).finish();
                 }
             });
         }
