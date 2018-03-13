@@ -90,6 +90,7 @@ public class HomeActivity extends AppCompatActivity
     public Toolbar toolbar;
     public NavigationView navigationView;
     private ImageView imgUserImage;
+    private TextView counterText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +107,7 @@ public class HomeActivity extends AppCompatActivity
         txtUserName= (TextView)navigationView.getHeaderView(0).findViewById(R.id.txtUserName);
         txtUserEmail= (TextView)navigationView.getHeaderView(0).findViewById(R.id.txtUserEmail);
         txtToolBarTitle = (TextView)toolbar.findViewById(R.id.txtToolbarTitle);
+        counterText = (TextView) navigationView.getMenu().findItem(R.id.nav_project).getActionView().findViewById(R.id.navCountBubble);
 //        btnProjectNext = findViewById(R.id.btnProjectNext);
         imgUserImage =(ImageView) navigationView.getHeaderView(0).findViewById(R.id.imgImageUser);
 
@@ -127,12 +129,17 @@ public class HomeActivity extends AppCompatActivity
         mUserName = mPrefs.getString(getResources().getString(R.string.pref_userName), null);
 
 
+
         loadFragment(new SelectProjectFragment());
 
         GetUserDetails();
 
     }
 
+    public  void updateCounter(int count)
+    {
+         counterText.setText(String.valueOf(count));
+    }
 
     private void GetUserDetails()
     {

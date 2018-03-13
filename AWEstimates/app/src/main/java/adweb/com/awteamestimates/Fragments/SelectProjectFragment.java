@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -45,6 +46,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 import adweb.com.awteamestimates.Adapters.ProjectsAdapter;
 import adweb.com.awteamestimates.HomeActivity;
@@ -58,7 +60,6 @@ import adweb.com.awteamestimates.Models.TeamEstimationsRolesDatum;
 import adweb.com.awteamestimates.R;
 import adweb.com.awteamestimates.Service.JiraServices;
 import adweb.com.awteamestimates.Utilities.AppConstants;
-import adweb.com.awteamestimates.Utilities.ProjectDividerItemDecoration;
 
 import static android.support.v7.widget.DividerItemDecoration.VERTICAL;
 //import adweb.com.awteamestimates.Utilities.DividerItemDecoration;
@@ -146,10 +147,7 @@ public class SelectProjectFragment extends Fragment implements ProjectsAdapter.P
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-//        txtTemp = (TextView)view.findViewById(R.id.txtSelect);
-//        mProjectSpinner = (Spinner)view.findViewById(R.id.spinProjectName);
-//        mRoleSpinner = (Spinner)view.findViewById(R.id.spinRoleName);
-//        layoutRole = (LinearLayout)view.findViewById(R.id.layoutRole);
+
         recyclerView = view.findViewById(R.id.recycler_view);
         searchView  = view.findViewById(R.id.searchFilterProjects);
 
@@ -195,6 +193,16 @@ public class SelectProjectFragment extends Fragment implements ProjectsAdapter.P
 
                     }
 
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        try {
+                            List<CurrentEstimatedIssue> mCounterCollection = AppConstants.FullProjectList.stream().filter(user -> user.getTeamEstimationsRolesData().size() == 0).collect(Collectors.toList());
+                            ((HomeActivity) getActivity()).updateCounter(mCounterCollection.size());
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new RuntimeException("Could not fetch project details.");
+                        }
+                    }
 
 
 
@@ -255,6 +263,7 @@ public class SelectProjectFragment extends Fragment implements ProjectsAdapter.P
            AlertDialog.Builder mAlert =  new AlertDialog.Builder(getActivity());
            mAlert.setTitle("Error");
            mAlert.setMessage(ex.getMessage()).create().show();
+           mAlert.setCancelable(false);
             ex.printStackTrace();
         }
         //endregion

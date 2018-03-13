@@ -98,45 +98,51 @@ public class JiraServices {
 
                 // String credentials = "{\"username\":\"admin\",\"password\":\"admin\"}";
 
-                URL url = new URL(mBaseUrl + ApiUrls.LOGIN_URL );
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setDoOutput(true);
-                conn.setRequestMethod("POST");
-                conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+                String url = mBaseUrl + ApiUrls.LOGIN_URL ;
 
+                String userDetails = invokeGetMethod(url, credentials);
 
-                OutputStream os = conn.getOutputStream();
-                os.write(credentials.getBytes());
-                os.close();
-
-                if (conn.getResponseCode() != HttpURLConnection.HTTP_OK)
-                {
-                    throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
-                }
-
-                BufferedReader br = new BufferedReader(new InputStreamReader(
-                        (conn.getInputStream())));
-
-                String output;
-
-                while ((output = br.readLine()) != null) {
-
-                    System.out.println("Output from Server .... \n" + output);
-                    final ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, false);;
-                    try {
-
-                        LoginModel mModel = mapper.readValue(output, LoginModel.class);
-
-                        return  mModel;
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-
-
-                conn.disconnect();
+                final ObjectMapper mapper = new ObjectMapper();//.configure(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT, false);;
+                LoginModel mModel = mapper.readValue(userDetails, LoginModel.class);
+                return  mModel;
+//                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+//                conn.setDoOutput(true);
+//                conn.setRequestMethod("POST");
+//                conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+//
+//
+//                OutputStream os = conn.getOutputStream();
+//                os.write(credentials.getBytes());
+//                os.close();
+//
+//                if (conn.getResponseCode() != HttpURLConnection.HTTP_OK)
+//                {
+//                    throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
+//                }
+//
+//                BufferedReader br = new BufferedReader(new InputStreamReader(
+//                        (conn.getInputStream())));
+//
+//                String output;
+//
+//                while ((output = br.readLine()) != null) {
+//
+//                    System.out.println("Output from Server .... \n" + output);
+//                    final ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, false);;
+//                    try {
+//
+//                        LoginModel mModel = mapper.readValue(output, LoginModel.class);
+//
+//                        return  mModel;
+//
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//
+//
+//
+//                conn.disconnect();
 
             } catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -158,6 +164,25 @@ public class JiraServices {
 
             // TODO: register the new account here.
             return null;
+        }
+
+        private String invokeGetMethod(String url, String credentials) {
+
+            Client client = Client.create();
+            WebResource webResource = client.resource(url );
+            ClientResponse response = webResource.type("application/json")
+                    .post(ClientResponse.class, credentials);
+
+            if (response.getStatus() != 200) {
+                throw new RuntimeException("Failed : HTTP error code : "
+                        + response.getStatus());
+            }
+
+            System.out.println("Output from Server .... \n");
+            String output = response.getEntity(String.class);
+            System.out.println(output);
+            return  output;
+
         }
 
         @Override
