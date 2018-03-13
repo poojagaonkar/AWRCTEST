@@ -285,7 +285,8 @@ public class HomeActivity extends AppCompatActivity
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
 
-                    mEdit.clear();
+                    mEdit.putString(getResources().getString(R.string.pref_sessionUserName), "");
+                    mEdit.putString(getResources().getString(R.string.pref_sessionUserValue), "");
                     mEdit.commit();
                     startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                     finish();
