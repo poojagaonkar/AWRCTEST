@@ -15,7 +15,7 @@ import adweb.com.awteamestimates.Models.GetRoles.RoleIdModel;
 
 public class AppConstants {
 
-    public  static  String tempPass;
+   public  static   String tempPass;
     public static List<CurrentEstimatedIssue> FullProjectList;
     public static CharSequence CurrentSelectedProject;
     public static Iterator<CurrentEstimatedIssue> CurrentIssueDetails;
@@ -31,4 +31,33 @@ public class AppConstants {
     public static String Protocol;
     public static RoleIdModel CurrentRoleDetails;
     public static String BaseUrl;
+    public static boolean isLoggedOut;
+    public static boolean isEstimated;
+    public static String estimatedProjectKey = "";
+    public static ArrayList<String> estimatedIssueKeys;
+    public static int totalIssueCounter;
+
+    public static void ClearAll()
+    {
+        tempPass = null;
+         FullProjectList = null;
+        CurrentSelectedProject= null;
+         CurrentIssueDetails= null;
+        // List<MoreDetailModel> CurrentProjectDetailList= null;
+        CurrentProjectDetailMap= null;
+       ProjectTitles= null;
+         CurrentEstimatedIssue= null;
+          isRefreshed= false;
+         ProjectRoleTitles= null;
+          CurrentSelectedRole= null;
+         isRoleEnabled= null;
+         ProjectRoleList= null;
+          Protocol= null;
+          CurrentRoleDetails= null;
+          BaseUrl= null;
+          isLoggedOut= true;
+          isEstimated= false;
+          estimatedProjectKey= null;
+         estimatedIssueKeys= null;
+    }
 }

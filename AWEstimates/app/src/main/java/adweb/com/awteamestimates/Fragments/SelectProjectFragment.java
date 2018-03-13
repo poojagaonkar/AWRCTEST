@@ -131,6 +131,7 @@ public class SelectProjectFragment extends Fragment implements ProjectsAdapter.P
         mEdit = mPrefs.edit();
         setHasOptionsMenu(true);
         //setRetainInstance(false);
+        AppConstants.estimatedIssueKeys = new ArrayList<String>();
 
     }
 
@@ -171,7 +172,7 @@ public class SelectProjectFragment extends Fragment implements ProjectsAdapter.P
         //region Get Project Details
         try {
 
-            if(AppConstants.ProjectTitles == null || AppConstants.ProjectTitles.size() ==0 || AppConstants.isRefreshed ) {
+            if(AppConstants.ProjectTitles == null || AppConstants.ProjectTitles.size() ==0 || AppConstants.isRefreshed || !AppConstants.isLoggedOut) {
                 JiraServices.GetProjectDetails getProjectDetails = new JiraServices.GetProjectDetails(getActivity(), mUserName, mBaseUrl);
                 ProjectModel mModel = getProjectDetails.execute().get();
 
@@ -295,6 +296,15 @@ public class SelectProjectFragment extends Fragment implements ProjectsAdapter.P
         menuItem.setVisible(false);
 
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(AppConstants.isEstimated)
+        {
+            mAdapter.notifyDataSetChanged();
+        }
     }
 
     private void loadFragment(Fragment fragment) {

@@ -201,6 +201,7 @@ public class JiraServices {
                 editor.putString(mContext.getResources().getString(R.string.pref_baseUrl), mBaseUrl);
                 editor.putString(mContext.getResources().getString(R.string.pref_userName), mUserName);
                 editor.putString("Protocol", AppConstants.Protocol);
+                editor.putBoolean(mContext.getResources().getString(R.string.pref_loggedOut), false);
                 AppConstants.tempPass = mPassword;
                 AppConstants.BaseUrl  = mBaseUrl;
                 editor.commit();
@@ -558,6 +559,9 @@ public class JiraServices {
         @Override
         protected void onPostExecute(final EstimateModel mModel) {
 
+            AppConstants.isEstimated = true;
+            AppConstants.estimatedProjectKey = mModel.getIssueKey();
+            AppConstants.estimatedIssueKeys.add(mModel.getIssueKey());
             if(dialog.isShowing())
             {
                 dialog.dismiss();;

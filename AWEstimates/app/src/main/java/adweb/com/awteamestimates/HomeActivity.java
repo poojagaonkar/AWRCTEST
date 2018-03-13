@@ -72,7 +72,7 @@ import adweb.com.awteamestimates.Service.JiraServices;
 import adweb.com.awteamestimates.Utilities.AppConstants;
 
 public class HomeActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, SelectProjectFragment.OnFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener, SelectProjectFragment.OnFragmentInteractionListener, DrawerLayout.DrawerListener {
 
     public SharedPreferences mPrefs ;
     public  SharedPreferences.Editor mEdit ;
@@ -103,6 +103,7 @@ public class HomeActivity extends AppCompatActivity
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         navigationView = (NavigationView) findViewById(R.id.nav_view);
+        drawer.setDrawerListener(this);
 
         txtUserName= (TextView)navigationView.getHeaderView(0).findViewById(R.id.txtUserName);
         txtUserEmail= (TextView)navigationView.getHeaderView(0).findViewById(R.id.txtUserEmail);
@@ -127,6 +128,7 @@ public class HomeActivity extends AppCompatActivity
 
         mBaseUrl = mPrefs.getString(getResources().getString(R.string.pref_baseUrl), null);
         mUserName = mPrefs.getString(getResources().getString(R.string.pref_userName), null);
+        AppConstants.isLoggedOut = mPrefs.getBoolean(getResources().getString(R.string.pref_loggedOut),false);
 
 
 
@@ -138,7 +140,14 @@ public class HomeActivity extends AppCompatActivity
 
     public  void updateCounter(int count)
     {
-         counterText.setText(String.valueOf(count));
+        if(count > 0 ) {
+            counterText.setVisibility(View.VISIBLE);
+            counterText.setText(String.valueOf(count));
+        }
+        else
+        {
+            counterText.setVisibility(View.INVISIBLE);
+        }
     }
 
     private void GetUserDetails()
@@ -287,7 +296,13 @@ public class HomeActivity extends AppCompatActivity
 
                     mEdit.putString(getResources().getString(R.string.pref_sessionUserName), "");
                     mEdit.putString(getResources().getString(R.string.pref_sessionUserValue), "");
+                    mEdit.putBoolean(getResources().getString(R.string.pref_loggedOut), true);
                     mEdit.commit();
+
+                    AppConstants.estimatedIssueKeys = null;
+                    AppConstants.FullProjectList = null;
+                    AppConstants.isEstimated = false;
+                    AppConstants.ClearAll();
                     startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                     finish();
                 }
@@ -325,6 +340,27 @@ public class HomeActivity extends AppCompatActivity
 
     @Override
     public void onFragmentInteraction(Uri uri) {
+
+    }
+
+    @Override
+    public void onDrawerSlide(View drawerView, float slideOffset) {
+
+    }
+
+    @Override
+    public void onDrawerOpened(View drawerView) {
+
+        counterText.setText(String.valueOf(Integer.valueOf(counterText.getText().toString()) - AppConstants.estimatedIssueKeys.size()));
+    }
+
+    @Override
+    public void onDrawerClosed(View drawerView) {
+
+    }
+
+    @Override
+    public void onDrawerStateChanged(int newState) {
 
     }
 }

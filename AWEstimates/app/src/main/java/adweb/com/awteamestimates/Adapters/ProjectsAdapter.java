@@ -76,7 +76,7 @@ public class ProjectsAdapter extends RecyclerView.Adapter<ProjectsAdapter.MyView
         CurrentEstimatedIssue mProject = projectListFiltered.get(position);
         holder.name.setText(mProject.getProjectName());
 
-        if(mProject.getTeamEstimationsRolesData().size() == 0)
+        if(mProject.getTeamEstimationsRolesData().size() == 0 && !AppConstants.estimatedIssueKeys.contains(mProject.getIssueKey()))
         {
             holder.countBubble.setVisibility(View.VISIBLE);
         }
