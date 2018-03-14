@@ -1,16 +1,27 @@
 package adweb.com.awteamestimates.Adapters;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.ahmadrosid.svgloader.SvgLoader;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.Inflater;
 
 import adweb.com.awteamestimates.Models.CurrentEstimatedIssue;
+import adweb.com.awteamestimates.Models.MoreIssueDetailModel;
 import adweb.com.awteamestimates.R;
 import adweb.com.awteamestimates.Utilities.AppConstants;
 
@@ -31,19 +42,18 @@ public class MoreDetailsAdapter extends BaseAdapter {
     public  MoreDetailsAdapter(Activity mActivity)
     {
         this.mActivity = mActivity;
-        mData = new ArrayList();
-        mData.addAll(AppConstants.CurrentProjectDetailMap.entrySet());
+
     }
 
     @Override
     public int getCount() {
 
-        return mData.size();
+        return AppConstants.CurrentProjectDetailList.size();
     }
 
     @Override
     public Object getItem(int i) {
-        return (Map.Entry) mData.get(i);
+        return (AppConstants.CurrentProjectDetailList.get(i));
     }
 
     @Override
@@ -58,13 +68,30 @@ public class MoreDetailsAdapter extends BaseAdapter {
         View mView = mActivity.getLayoutInflater().inflate(R.layout.more_issues_row , viewGroup, false);
         txtFieldName = (TextView)mView.findViewById(R.id.txtFieldName);
         txtIssueDetail  = (TextView)mView.findViewById(R.id.txtIssueDetail);
+        ImageView issueIcon = (ImageView) mView.findViewById(R.id.issueIcon);
 
-        Map.Entry<String, String> item = (Map.Entry<String, String>) getItem(i);
+        MoreIssueDetailModel item = AppConstants.CurrentProjectDetailList.get(i);
 
 //        String fieldName = String.valueOf();
 //        String issueName = String.valueOf();
-        txtFieldName.setText(item.getKey());
-        txtIssueDetail.setText(item.getValue());
+        txtFieldName.setText(item.getFieldTitle());
+        txtIssueDetail.setText(item.getFieldValue());
+
+        String iconUrl = AppConstants.BaseUrl  + AppConstants.CurrentEstimatedIssue.getAvatarIssue();
+        String strToMatch = "Issue Type :  ";
+        String mFirled = item.getFieldTitle();
+
+        if(mFirled.matches(strToMatch))
+        {
+
+            SvgLoader.pluck()
+                    .with(mActivity)
+                    .setPlaceHolder(R.mipmap.ic_launcher, R.mipmap.ic_launcher)
+                    .load(iconUrl, issueIcon);
+
+
+
+        }
         return mView;
     }
 }

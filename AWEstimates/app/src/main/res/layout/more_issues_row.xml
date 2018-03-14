@@ -15,14 +15,32 @@
         android:textSize="20sp"
         android:textStyle="bold" />
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp"
+        >
+
     <TextView
         android:id="@+id/txtIssueDetail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="left"
-        android:gravity="left"
+        android:layout_gravity="center_vertical"
         android:text="TextView"
         android:textColor="@color/colorText"
         android:layout_marginTop="10dp"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        />
+
+    <ImageView
+        android:id="@+id/issueIcon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/txtIssueDetail"
+        android:paddingLeft="10dp"
+        android:layout_marginRight="10dp"
+        />
+    </RelativeLayout>
 </LinearLayout>

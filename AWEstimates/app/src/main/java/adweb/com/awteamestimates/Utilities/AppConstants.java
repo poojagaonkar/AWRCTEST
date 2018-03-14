@@ -9,6 +9,7 @@ import java.util.List;
 
 import adweb.com.awteamestimates.Models.CurrentEstimatedIssue;
 import adweb.com.awteamestimates.Models.GetRoles.RoleIdModel;
+import adweb.com.awteamestimates.Models.MoreIssueDetailModel;
 
 /**
  * Created by PoojaGaonkar on 2/5/2018.
@@ -20,7 +21,7 @@ public class AppConstants {
     public static List<CurrentEstimatedIssue> FullProjectList;
     public static CharSequence CurrentSelectedProject;
     public static Iterator<CurrentEstimatedIssue> CurrentIssueDetails;
-    //public static List<MoreDetailModel> CurrentProjectDetailList;
+    //public static List<MoreIssueDetailModel> CurrentProjectDetailList;
     public static HashMap<String, String> CurrentProjectDetailMap;
     public static ArrayList ProjectTitles;
     public static CurrentEstimatedIssue CurrentEstimatedIssue;
@@ -38,6 +39,7 @@ public class AppConstants {
     public static ArrayList<String> estimatedIssueKeys;
     public static int totalIssueCounter;
     public static LinkedHashMap<String, String> MyEstimatedIssuesMap;
+    public static ArrayList<MoreIssueDetailModel> CurrentProjectDetailList;
 
     public static void ClearAll()
     {
@@ -45,7 +47,7 @@ public class AppConstants {
          FullProjectList = null;
         CurrentSelectedProject= null;
          CurrentIssueDetails= null;
-        // List<MoreDetailModel> CurrentProjectDetailList= null;
+        // List<MoreIssueDetailModel> CurrentProjectDetailList= null;
         CurrentProjectDetailMap= null;
        ProjectTitles= null;
          CurrentEstimatedIssue= null;

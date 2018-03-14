@@ -17,7 +17,9 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
     "projectName",
     "issueKey",
     "issueTitle",
-    "avatar",
+    "avatarProject",
+    "avatarIssue",
+    "originalEstimate",
     "teamEstimationsRolesData"
 })
 public class CurrentEstimatedIssue {
@@ -30,8 +32,12 @@ public class CurrentEstimatedIssue {
     private String issueKey;
     @JsonProperty("issueTitle")
     private String issueTitle;
-    @JsonProperty("avatar")
-    private Integer avatar;
+    @JsonProperty("avatarProject")
+    private Integer avatarProject;
+    @JsonProperty("avatarIssue")
+    private String avatarIssue;
+    @JsonProperty("originalEstimate")
+    private String originalEstimate;
     @JsonProperty("teamEstimationsRolesData")
     private List<TeamEstimationsRolesDatum> teamEstimationsRolesData = null;
     @JsonIgnore
@@ -77,14 +83,34 @@ public class CurrentEstimatedIssue {
         this.issueTitle = issueTitle;
     }
 
-    @JsonProperty("avatar")
-    public Integer getAvatar() {
-        return avatar;
+    @JsonProperty("avatarProject")
+    public Integer getAvatarProject() {
+        return avatarProject;
     }
 
-    @JsonProperty("avatar")
-    public void setAvatar(Integer avatar) {
-        this.avatar = avatar;
+    @JsonProperty("avatarProject")
+    public void setAvatarProject(Integer avatarProject) {
+        this.avatarProject = avatarProject;
+    }
+
+    @JsonProperty("avatarIssue")
+    public String getAvatarIssue() {
+        return avatarIssue;
+    }
+
+    @JsonProperty("avatarIssue")
+    public void setAvatarIssue(String avatarIssue) {
+        this.avatarIssue = avatarIssue;
+    }
+
+    @JsonProperty("originalEstimate")
+    public String getOriginalEstimate() {
+        return originalEstimate;
+    }
+
+    @JsonProperty("originalEstimate")
+    public void setOriginalEstimate(String originalEstimate) {
+        this.originalEstimate = originalEstimate;
     }
 
     @JsonProperty("teamEstimationsRolesData")

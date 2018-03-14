@@ -93,7 +93,7 @@ public class ProjectsAdapter extends RecyclerView.Adapter<ProjectsAdapter.MyView
 //                .centerCrop()
 //                .into(holder.thumbnail);
 
-        String avatarUrl = AppConstants.BaseUrl+"/secure/projectavatar?avatarId="+ mProject.getAvatar();
+        String avatarUrl = AppConstants.BaseUrl+"/secure/projectavatar?avatarId="+ mProject.getAvatarProject();
         SvgLoader.pluck()
                 .with(context)
                 .setPlaceHolder(R.mipmap.ic_launcher, R.mipmap.ic_launcher)

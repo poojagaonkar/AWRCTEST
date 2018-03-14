@@ -14,7 +14,9 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonPropertyOrder({
     "userKey",
     "estimateLong",
-    "estimateFormatted"
+    "estimateFormatted",
+    "Roleid",
+    "RoleName"
 })
 public class TeamEstimationsRolesDatum {
 

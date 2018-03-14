@@ -20,6 +20,13 @@
             app:popupTheme="@style/AppTheme.PopupOverlay" >
 
 
+            <ImageView
+                android:id="@+id/toolBarissueIcon"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:paddingLeft="10dp"
+           />
+
             <TextView
                 android:id="@+id/toolbarIssueDetailsTitle"
                 android:layout_width="wrap_content"

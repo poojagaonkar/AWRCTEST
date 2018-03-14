@@ -205,7 +205,7 @@ public class IssueSummaryActivity extends AppCompatActivity implements  IssueLis
                         }
 
                         AppConstants.CurrentRoleDetails = mCurrentRole;
-                        if(!mCurrentRole.getRoleEstimate().toString().isEmpty()) {
+                        if(mCurrentRole.getRoleEstimate()!=null && !mCurrentRole.getRoleEstimate().toString().isEmpty()) {
 
                             //TODO Change txtOrgEstimate this as per original estimate from API when ready.
                             txtOrgEstimate.setText(mCurrentRole.getRoleEstimate());
