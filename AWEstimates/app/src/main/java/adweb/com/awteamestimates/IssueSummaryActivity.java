@@ -1,5 +1,6 @@
 package adweb.com.awteamestimates;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
@@ -9,6 +10,7 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
@@ -61,6 +63,7 @@ public class IssueSummaryActivity extends AppCompatActivity implements  IssueLis
     private CardView cardView;
     private Button btnCancelBottomSheet;
     private  TextView toolbarTxtProjectTitle;
+    private String myPreviousEstimate ="";
 
 
     @Override
@@ -92,32 +95,61 @@ public class IssueSummaryActivity extends AppCompatActivity implements  IssueLis
         mBaseUrl = mPrefs.getString(getResources().getString(R.string.pref_baseUrl), null);
         mUserName = mPrefs.getString(getResources().getString(R.string.pref_userName), null);
 
+        try {
+                    if (AppConstants.isRoleEnabled) {
+                        mSpinRole.setVisibility(View.VISIBLE);
+                        GetRoles();
 
-        if(AppConstants.isRoleEnabled) {
-            mSpinRole.setVisibility(View.VISIBLE);
-            GetRoles();
+                        if (mRoleIdCollection == null) {
+                            mRoleIdCollection = Collections2.filter(AppConstants.ProjectRoleList, val -> val.getRoleName().equals(AppConstants.CurrentSelectedRole));
+                            mCurrentRole = mRoleIdCollection.iterator().next();
+                        }
+
+                        AppConstants.CurrentRoleDetails = mCurrentRole;
+
+                        if(!mCurrentRole.getRoleEstimate().toString().isEmpty()) {
+
+                            //TODO Change this as per original estimate from API when ready.
+                            txtOrgEstimate.setText(mCurrentRole.getRoleEstimate());
+
+                             myPreviousEstimate = AppConstants.MyEstimatedIssuesMap.get(AppConstants.CurrentEstimatedIssue.getIssueKey()) ;
+                            if(myPreviousEstimate !=null && !myPreviousEstimate.isEmpty() && !myPreviousEstimate.matches(mCurrentRole.getRoleEstimate().toString()))
+                            {
+                                txtMyEstimate.setText(myPreviousEstimate);
+                            }
+                            else {
+                                txtMyEstimate.setText(mCurrentRole.getRoleEstimate());
+                            }
+                        }
+                        else
+                        {
+                            txtOrgEstimate.setText(getResources().getString(R.string.DefaultEstimateString));
+                            txtMyEstimate.setText(getResources().getString(R.string.DefaultEstimateString));
+
+                        }
+                    }
+
+                    txtIssueTitle.setText(AppConstants.CurrentEstimatedIssue.getIssueTitle());
+
+
+                        //Show Bottom Sheet options
+                        View view = getLayoutInflater().inflate(R.layout.fragment_issue_list_dialog, null);
+
+                        optionsList = new ArrayList<>();
+                        optionsList.add("Estimate Issue");
+                        optionsList.add("More Details");
+
+                        cardView.setOnClickListener(this);
         }
-
-        txtIssueTitle.setText(AppConstants.CurrentEstimatedIssue.getIssueTitle());
-
-        if(mRoleIdCollection == null) {
-            mRoleIdCollection = Collections2.filter(AppConstants.ProjectRoleList, val -> val.getRoleName().equals(AppConstants.CurrentSelectedRole));
-            mCurrentRole = mRoleIdCollection.iterator().next();
+        catch (Exception ex)
+        {
+              AlertDialog.Builder mAlert = new AlertDialog.Builder(this);
+              mAlert.setMessage(ex.getMessage());
+              mAlert.setTitle("Error");
+              mAlert.setCancelable(false);
+              mAlert.setPositiveButton("Ok",null);
+              mAlert.create().show();
         }
-
-        AppConstants.CurrentRoleDetails = mCurrentRole;
-
-        txtOrgEstimate.setText(mCurrentRole.getRoleEstimate());
-
-
-        //Show Bottom Sheet options
-        View view = getLayoutInflater().inflate(R.layout.fragment_issue_list_dialog, null);
-
-        optionsList = new ArrayList<>();
-        optionsList.add("Estimate Issue");
-        optionsList.add("More Details");
-
-        cardView.setOnClickListener(this);
 
     }
 
@@ -173,7 +205,26 @@ public class IssueSummaryActivity extends AppCompatActivity implements  IssueLis
                         }
 
                         AppConstants.CurrentRoleDetails = mCurrentRole;
-                        txtOrgEstimate.setText(mCurrentRole.getRoleEstimate());
+                        if(!mCurrentRole.getRoleEstimate().toString().isEmpty()) {
+
+                            //TODO Change txtOrgEstimate this as per original estimate from API when ready.
+                            txtOrgEstimate.setText(mCurrentRole.getRoleEstimate());
+
+                            String myPreviousEstimate = AppConstants.MyEstimatedIssuesMap.get(AppConstants.CurrentEstimatedIssue.getIssueKey());
+                            if(myPreviousEstimate !=null && !myPreviousEstimate.isEmpty() && !myPreviousEstimate.matches(mCurrentRole.getRoleEstimate().toString()))
+                            {
+                                txtMyEstimate.setText(myPreviousEstimate);
+                            }
+                            else {
+                                txtMyEstimate.setText(mCurrentRole.getRoleEstimate());
+                            }
+                        }
+                        else
+                        {
+                            txtOrgEstimate.setText(getResources().getString(R.string.DefaultEstimateString));
+                            txtMyEstimate.setText(getResources().getString(R.string.DefaultEstimateString));
+
+                        }
                     }
 
                     @Override
@@ -188,6 +239,9 @@ public class IssueSummaryActivity extends AppCompatActivity implements  IssueLis
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
         }
 
     }
@@ -222,6 +276,7 @@ public class IssueSummaryActivity extends AppCompatActivity implements  IssueLis
                 String returnString = data.getStringExtra("MyEstimates");
 
                 // set text view with string
+
               txtMyEstimate.setText(returnString);
 
             }
@@ -285,8 +340,8 @@ public class IssueSummaryActivity extends AppCompatActivity implements  IssueLis
                 AppConstants.CurrentEstimatedIssue  = AppConstants.CurrentIssueDetails.next();
 
                 txtIssueTitle.setText(AppConstants.CurrentEstimatedIssue.getIssueTitle());
-                txtOrgEstimate.setText("N/A");
-                txtMyEstimate.setText("N/A");
+                txtOrgEstimate.setText(getResources().getString(R.string.DefaultEstimateString));
+                txtMyEstimate.setText(getResources().getString(R.string.DefaultEstimateString));
             }
         } catch (InterruptedException e) {
             e.printStackTrace();

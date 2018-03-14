@@ -25,6 +25,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -197,6 +198,7 @@ public class SelectProjectFragment extends Fragment implements ProjectsAdapter.P
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                         try {
                             List<CurrentEstimatedIssue> mCounterCollection = AppConstants.FullProjectList.stream().filter(user -> user.getTeamEstimationsRolesData().size() == 0).collect(Collectors.toList());
+                            AppConstants.totalIssueCounter = mCounterCollection.size();
                             ((HomeActivity) getActivity()).updateCounter(mCounterCollection.size());
                         }
                         catch (Exception ex)
@@ -361,9 +363,18 @@ public class SelectProjectFragment extends Fragment implements ProjectsAdapter.P
         //AppConstants.CurrentIssueDetails = Collections2.filter(AppConstants.FullProjectList, user -> user.getProjectName().equals(AppConstants.CurrentSelectedProject)).iterator();
         AppConstants.CurrentEstimatedIssue  = currentEstimatedIssue;
 
-
+        searchView.setQuery("", false);
+        mAdapter.getFilter().filter("");
+        HideKeyboard(searchView);
         getActivity().startActivity(new Intent(getActivity(), IssueSummaryActivity.class));
 
+    }
+
+    private void HideKeyboard(View v) {
+        if (v != null) {
+            InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+        }
     }
 
     /**

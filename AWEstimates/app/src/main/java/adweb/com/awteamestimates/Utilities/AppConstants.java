@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import adweb.com.awteamestimates.Models.CurrentEstimatedIssue;
@@ -36,6 +37,7 @@ public class AppConstants {
     public static String estimatedProjectKey = "";
     public static ArrayList<String> estimatedIssueKeys;
     public static int totalIssueCounter;
+    public static LinkedHashMap<String, String> MyEstimatedIssuesMap;
 
     public static void ClearAll()
     {

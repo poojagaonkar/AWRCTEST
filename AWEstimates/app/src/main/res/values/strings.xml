@@ -37,6 +37,7 @@
     <string name="title_activity_issue_summary">IssueSummaryActivity</string>
     <string name="title_activity_estimate_issue">EstimateIssueActivity</string>
     <string name="pref_loggedOut">false</string>
+    <string name="DefaultEstimateString">Unestimated</string>
 
 
 </resources>

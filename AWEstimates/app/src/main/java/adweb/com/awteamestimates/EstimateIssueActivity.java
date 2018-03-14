@@ -180,6 +180,8 @@ public class EstimateIssueActivity extends AppCompatActivity implements View.OnC
 
                             if (estimateModel != null && estimateModel.getSuccess() == 200) {
 
+
+                                AppConstants.MyEstimatedIssuesMap.put(estimateModel.getIssueKey(), mEstimateString);
                                 Intent intent = new Intent();
                                 intent.putExtra("MyEstimates", mEstimateString);
                                 setResult(RESULT_OK, intent);

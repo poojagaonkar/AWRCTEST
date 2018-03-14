@@ -56,6 +56,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -129,10 +130,10 @@ public class HomeActivity extends AppCompatActivity
         mBaseUrl = mPrefs.getString(getResources().getString(R.string.pref_baseUrl), null);
         mUserName = mPrefs.getString(getResources().getString(R.string.pref_userName), null);
         AppConstants.isLoggedOut = mPrefs.getBoolean(getResources().getString(R.string.pref_loggedOut),false);
+        AppConstants.MyEstimatedIssuesMap = new LinkedHashMap<String, String>();
 
 
-
-        loadFragment(new SelectProjectFragment());
+                loadFragment(new SelectProjectFragment());
 
         GetUserDetails();
 
@@ -351,7 +352,9 @@ public class HomeActivity extends AppCompatActivity
     @Override
     public void onDrawerOpened(View drawerView) {
 
-        counterText.setText(String.valueOf(Integer.valueOf(counterText.getText().toString()) - AppConstants.estimatedIssueKeys.size()));
+        if(Integer.valueOf(counterText.getText().toString()) > 0) {
+            counterText.setText(String.valueOf(Integer.valueOf(AppConstants.totalIssueCounter) - AppConstants.estimatedIssueKeys.size()));
+        }
     }
 
     @Override
