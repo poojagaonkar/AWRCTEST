@@ -98,6 +98,17 @@ public class IssueSummaryActivity extends AppCompatActivity implements  IssueLis
         try {
                     if (AppConstants.isRoleEnabled) {
                         mSpinRole.setVisibility(View.VISIBLE);
+
+                        if(AppConstants.CurrentEstimatedIssue.getOriginalEstimate()!=null && !AppConstants.CurrentEstimatedIssue.getOriginalEstimate().toString().isEmpty())
+                        {
+                            txtOrgEstimate.setText(AppConstants.CurrentEstimatedIssue.getOriginalEstimate());
+
+                        }
+                        else
+                        {
+                            txtOrgEstimate.setText(getResources().getString(R.string.DefaultEstimateString));
+
+                        }
                         GetRoles();
 
                         if (mRoleIdCollection == null) {
@@ -105,12 +116,12 @@ public class IssueSummaryActivity extends AppCompatActivity implements  IssueLis
                             mCurrentRole = mRoleIdCollection.iterator().next();
                         }
 
+
                         AppConstants.CurrentRoleDetails = mCurrentRole;
 
-                        if(!mCurrentRole.getRoleEstimate().toString().isEmpty()) {
+                        if(mCurrentRole.getRoleEstimate()!=null && !mCurrentRole.getRoleEstimate().toString().isEmpty()) {
 
-                            //TODO Change this as per original estimate from API when ready.
-                            txtOrgEstimate.setText(mCurrentRole.getRoleEstimate());
+
 
                              myPreviousEstimate = AppConstants.MyEstimatedIssuesMap.get(AppConstants.CurrentEstimatedIssue.getIssueKey()) ;
                             if(myPreviousEstimate !=null && !myPreviousEstimate.isEmpty() && !myPreviousEstimate.matches(mCurrentRole.getRoleEstimate().toString()))
@@ -123,7 +134,6 @@ public class IssueSummaryActivity extends AppCompatActivity implements  IssueLis
                         }
                         else
                         {
-                            txtOrgEstimate.setText(getResources().getString(R.string.DefaultEstimateString));
                             txtMyEstimate.setText(getResources().getString(R.string.DefaultEstimateString));
 
                         }
@@ -207,21 +217,30 @@ public class IssueSummaryActivity extends AppCompatActivity implements  IssueLis
                         AppConstants.CurrentRoleDetails = mCurrentRole;
                         if(mCurrentRole.getRoleEstimate()!=null && !mCurrentRole.getRoleEstimate().toString().isEmpty()) {
 
-                            //TODO Change txtOrgEstimate this as per original estimate from API when ready.
-                            txtOrgEstimate.setText(mCurrentRole.getRoleEstimate());
-
-                            String myPreviousEstimate = AppConstants.MyEstimatedIssuesMap.get(AppConstants.CurrentEstimatedIssue.getIssueKey());
-                            if(myPreviousEstimate !=null && !myPreviousEstimate.isEmpty() && !myPreviousEstimate.matches(mCurrentRole.getRoleEstimate().toString()))
+                            if(AppConstants.CurrentEstimatedIssue.getOriginalEstimate()!=null && !AppConstants.CurrentEstimatedIssue.getOriginalEstimate().toString().isEmpty())
                             {
-                                txtMyEstimate.setText(myPreviousEstimate);
+                                txtOrgEstimate.setText(AppConstants.CurrentEstimatedIssue.getOriginalEstimate());
+
                             }
                             else {
+
+                                txtOrgEstimate.setText(getResources().getString(R.string.DefaultEstimateString));
+
+                            }
+
+                            if(mCurrentRole.getRoleEstimate() != null && !mCurrentRole.getRoleEstimate().isEmpty())
+                            {
                                 txtMyEstimate.setText(mCurrentRole.getRoleEstimate());
+                            }
+                            else {
+                                String myPreviousEstimate = AppConstants.MyEstimatedIssuesMap.get(AppConstants.CurrentEstimatedIssue.getIssueKey());
+                                if (myPreviousEstimate != null && !myPreviousEstimate.isEmpty() && !myPreviousEstimate.matches(mCurrentRole.getRoleEstimate().toString())) {
+                                    txtMyEstimate.setText(myPreviousEstimate);
+                                }
                             }
                         }
                         else
                         {
-                            txtOrgEstimate.setText(getResources().getString(R.string.DefaultEstimateString));
                             txtMyEstimate.setText(getResources().getString(R.string.DefaultEstimateString));
 
                         }
@@ -279,6 +298,9 @@ public class IssueSummaryActivity extends AppCompatActivity implements  IssueLis
 
               txtMyEstimate.setText(returnString);
 
+                GetProjectsDetails();
+
+
             }
         }
     }
@@ -303,7 +325,7 @@ public class IssueSummaryActivity extends AppCompatActivity implements  IssueLis
             case R.id.action_refresh:
 
                 GetProjectsDetails();
-                Toast.makeText(this, "Refreshing..", Toast.LENGTH_SHORT) .show();
+                Toast.makeText(this, "Refreshed.", Toast.LENGTH_SHORT) .show();
                 break;
             case android.R.id.home:
                 this.finish();
@@ -340,8 +362,7 @@ public class IssueSummaryActivity extends AppCompatActivity implements  IssueLis
                 AppConstants.CurrentEstimatedIssue  = AppConstants.CurrentIssueDetails.next();
 
                 txtIssueTitle.setText(AppConstants.CurrentEstimatedIssue.getIssueTitle());
-                txtOrgEstimate.setText(getResources().getString(R.string.DefaultEstimateString));
-                txtMyEstimate.setText(getResources().getString(R.string.DefaultEstimateString));
+                 this.recreate();
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
