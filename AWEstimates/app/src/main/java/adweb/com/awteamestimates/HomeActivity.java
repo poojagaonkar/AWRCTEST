@@ -355,6 +355,10 @@ public class HomeActivity extends AppCompatActivity
         if(Integer.valueOf(counterText.getText().toString()) > 0) {
             counterText.setText(String.valueOf(Integer.valueOf(AppConstants.totalIssueCounter) - AppConstants.estimatedIssueKeys.size()));
         }
+        else
+        {
+            counterText.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override

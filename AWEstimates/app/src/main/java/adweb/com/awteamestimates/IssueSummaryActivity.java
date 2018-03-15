@@ -64,6 +64,7 @@ public class IssueSummaryActivity extends AppCompatActivity implements  IssueLis
     private Button btnCancelBottomSheet;
     private  TextView toolbarTxtProjectTitle;
     private String myPreviousEstimate ="";
+    private String errorString;
 
 
     @Override
@@ -138,27 +139,37 @@ public class IssueSummaryActivity extends AppCompatActivity implements  IssueLis
 
                         }
                     }
+                    else
+                    {
+                        mSpinRole.setVisibility(View.INVISIBLE);
+                    }
 
                     txtIssueTitle.setText(AppConstants.CurrentEstimatedIssue.getIssueTitle());
+                     //Show Bottom Sheet options
+                     View view = getLayoutInflater().inflate(R.layout.fragment_issue_list_dialog, null);
 
-
-                        //Show Bottom Sheet options
-                        View view = getLayoutInflater().inflate(R.layout.fragment_issue_list_dialog, null);
-
-                        optionsList = new ArrayList<>();
-                        optionsList.add("Estimate Issue");
-                        optionsList.add("More Details");
+                      optionsList = new ArrayList<>();
+                      optionsList.add("Estimate Issue");
+                      optionsList.add("More Details");
 
                         cardView.setOnClickListener(this);
         }
         catch (Exception ex)
         {
-              AlertDialog.Builder mAlert = new AlertDialog.Builder(this);
-              mAlert.setMessage(ex.getMessage());
+              AlertDialog.Builder mAlert = new AlertDialog.Builder(this,R.style.AlertDialogTheme);
+
+              if(!errorString.isEmpty())
+              {
+                  mAlert.setMessage(ex.getMessage());
+
+              }
+              mAlert.setMessage(errorString);
               mAlert.setTitle("Error");
               mAlert.setCancelable(false);
               mAlert.setPositiveButton("Ok",null);
               mAlert.create().show();
+
+
         }
 
     }
@@ -253,14 +264,22 @@ public class IssueSummaryActivity extends AppCompatActivity implements  IssueLis
                 });
 
             }
+            else
+            {
+                errorString = "Roles not found";
+            }
 
         } catch (InterruptedException e) {
+
             e.printStackTrace();
+            errorString = e.getMessage();
         } catch (ExecutionException e) {
             e.printStackTrace();
+            errorString = e.getMessage();
         }
         catch (Exception ex) {
             ex.printStackTrace();
+            errorString = ex.getMessage();
         }
 
     }
