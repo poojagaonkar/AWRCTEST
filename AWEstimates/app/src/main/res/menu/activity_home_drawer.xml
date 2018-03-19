@@ -8,7 +8,7 @@
         <item
             android:id="@+id/nav_project"
             android:icon="@drawable/ic_changeproject"
-            android:title="Change Project"
+            android:title="Projects"
             app:actionLayout="@layout/menu_row_layout" />
         <item
             android:id="@+id/nav_logout"

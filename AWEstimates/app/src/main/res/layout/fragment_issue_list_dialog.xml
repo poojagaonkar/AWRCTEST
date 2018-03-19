@@ -16,14 +16,17 @@
 
 
     <Button
+        android:id="@+id/btnCancelBottomSheet"
+        style="?android:textAppearanceSmall"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_gravity="bottom"
-        android:id="@+id/btnCancelBottomSheet"
         android:layout_marginTop="10dp"
-       android:text="Cancel"
+        android:background="@drawable/rounded_corners"
+        android:text="Cancel"
         android:textColor="@color/colorPrimaryDark"
-        android:background="@drawable/rounded_corners"/>
+        android:textAllCaps="false"
+        android:textSize="18sp"/>
 
 
 </LinearLayout>

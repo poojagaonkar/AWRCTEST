@@ -70,45 +70,46 @@
                     android:maxLines="1"
                     android:background="@drawable/edittext_background"
                     android:padding="5dp"
-                    android:gravity="center"
+                    android:gravity="left|center_vertical"
                     android:singleLine="true"
                     android:focusedByDefault="true"/>
             </LinearLayout>
 
             <!--</android.support.design.widget.TextInputLayout>-->
 
-                <EditText
-                    android:id="@+id/email"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/prompt_email"
-                    android:inputType="textEmailAddress"
-                    android:maxLines="1"
-                    android:background="@drawable/edittext_background"
-                    android:padding="5dp"
-                    android:gravity="center"
-                    android:singleLine="true"
-                    android:drawableLeft="@drawable/ic_person_outline_black_36dp"
-                    android:layout_marginTop="10dp"/>
+            <EditText
+                android:id="@+id/email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/edittext_background"
+                android:drawableLeft="@drawable/ic_person_outline_black_36dp"
+                android:drawablePadding="10dp"
+                android:gravity="left|center_vertical"
+                android:hint="@string/prompt_email"
+                android:inputType="textEmailAddress"
+                android:maxLines="1"
+                android:padding="5dp"
+                android:singleLine="true" />
 
 
-
-                <EditText
-                    android:id="@+id/password"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/prompt_password"
-                    android:imeActionId="6"
-                    android:imeActionLabel="@string/action_sign_in_short"
-                    android:imeOptions="actionUnspecified"
-                    android:inputType="textPassword"
-                    android:maxLines="1"
-                    android:background="@drawable/edittext_background"
-                    android:padding="5dp"
-                    android:gravity="center"
-                    android:singleLine="true"
-                    android:drawableLeft="@drawable/ic_lock_outline_black_36dp"
-                    android:layout_marginTop="10dp"/>
+            <EditText
+                android:id="@+id/password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/edittext_background"
+                android:drawableLeft="@drawable/ic_lock_outline_black_36dp"
+                android:drawablePadding="10dp"
+                android:gravity="left|center_vertical"
+                android:hint="@string/prompt_password"
+                android:imeActionId="6"
+                android:imeActionLabel="@string/action_sign_in_short"
+                android:imeOptions="actionUnspecified"
+                android:inputType="textPassword"
+                android:maxLines="1"
+                android:padding="5dp"
+                android:singleLine="true" />
 
 
             <Button
