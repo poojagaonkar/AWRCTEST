@@ -78,7 +78,7 @@ public class EstimateIssueActivity extends AppCompatActivity implements View.OnC
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_24dp);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_right_grey);
 
         toolbarTxtIssueTitle.setText(AppConstants.CurrentEstimatedIssue.getIssueTitle());
 

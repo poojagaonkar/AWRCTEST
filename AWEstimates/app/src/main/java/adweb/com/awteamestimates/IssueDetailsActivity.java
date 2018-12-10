@@ -48,7 +48,7 @@ public class IssueDetailsActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(getResources().getDrawable(R.drawable.ic_arrow_back_black_24dp));
+        getSupportActionBar().setHomeAsUpIndicator(getResources().getDrawable(R.drawable.ic_keyboard_arrow_right_grey));
 
         txtToolbarTitle.setText(AppConstants.CurrentEstimatedIssue.getIssueTitle());
 
